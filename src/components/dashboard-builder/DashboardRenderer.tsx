@@ -1,9 +1,10 @@
 import React, { useMemo } from 'react';
 import { DashboardConfig, WidgetConfig } from '@/types/dashboard-config';
 import { WidgetRenderer } from './WidgetRenderer';
+import { useDashboardStore } from '@/stores/useDashboardStore';
 
 interface DashboardRendererProps {
-  config: DashboardConfig;
+  config?: DashboardConfig;
   editable?: boolean;
   onWidgetClick?: (widgetId: string) => void;
 }
@@ -13,10 +14,25 @@ interface DashboardRendererProps {
  * 根据配置动态渲染大屏布局和组件
  */
 export const DashboardRenderer: React.FC<DashboardRendererProps> = ({
-  config,
-  editable = false,
+  config: propConfig,
+  editable: propEditable,
   onWidgetClick
 }) => {
+  // 从 Store 获取状态
+  const { activeDashboard, isEditing } = useDashboardStore();
+  
+  // 优先使用 prop，否则使用 store
+  const config = propConfig || activeDashboard;
+  const editable = propEditable !== undefined ? propEditable : isEditing;
+
+  if (!config) {
+    return (
+      <div className="flex items-center justify-center w-full h-full bg-slate-900 text-slate-400">
+        未加载大屏配置
+      </div>
+    );
+  }
+
   const { layout, theme, widgets } = config;
 
   // 计算网格布局样式
