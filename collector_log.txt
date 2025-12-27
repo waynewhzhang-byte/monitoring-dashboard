@@ -1,0 +1,449 @@
+🔄 Manual Device Sync Start
+🔄 Starting Device Sync...
+prisma:error 
+Invalid `prisma.device.upsert()` invocation in
+D:\monitoring-dashboard\src\services\collector\device.ts:34:41
+
+  31 else if (opType.includes('storage')) type = DeviceType.STORAGE;
+  32 
+  33 try {
+→ 34     await prisma.device.upsert({
+           where: {
+             opmanagerId: undefined,
+         ?   id?: String,
+         ?   AND?: DeviceWhereInput | DeviceWhereInput[],
+         ?   OR?: DeviceWhereInput[],
+         ?   NOT?: DeviceWhereInput | DeviceWhereInput[],
+         ?   name?: StringFilter | String,
+         ?   displayName?: StringNullableFilter | String | Null,
+         ?   type?: EnumDeviceTypeFilter | DeviceType,
+         ?   category?: StringNullableFilter | String | Null,
+         ?   ipAddress?: StringFilter | String,
+         ?   macAddress?: StringNullableFilter | String | Null,
+         ?   vendor?: StringNullableFilter | String | Null,
+         ?   model?: StringNullableFilter | String | Null,
+         ?   serialNumber?: StringNullableFilter | String | Null,
+         ?   osType?: EnumOSTypeNullableFilter | OSType | Null,
+         ?   osVersion?: StringNullableFilter | String | Null,
+         ?   location?: StringNullableFilter | String | Null,
+         ?   status?: EnumDeviceStatusFilter | DeviceStatus,
+         ?   availability?: FloatNullableFilter | Float | Null,
+         ?   isMonitored?: BoolFilter | Boolean,
+         ?   createdAt?: DateTimeFilter | DateTime,
+         ?   updatedAt?: DateTimeFilter | DateTime,
+         ?   lastSyncAt?: DateTimeNullableFilter | DateTime | Null,
+         ?   interfaces?: InterfaceListRelationFilter,
+         ?   metrics?: DeviceMetricListRelationFilter,
+         ?   alarms?: AlarmListRelationFilter,
+         ?   topologyNodes?: TopologyNodeListRelationFilter
+           },
+           update: {
+             displayName: "ecs-121-36-242-5.compute.hwclouds-dns.com",
+             type: "OTHER",
+             ipAddress: undefined,
+             status: "ONLINE",
+             category: "Server",
+             vendor: "net-snmp",
+             isMonitored: false,
+             lastSyncAt: new Date("2025-12-16T05:43:10.696Z"),
+             availability: undefined
+           },
+           create: {
+             opmanagerId: undefined,
+             name: undefined,
+             displayName: "ecs-121-36-242-5.compute.hwclouds-dns.com",
+             type: "OTHER",
+             ipAddress: undefined,
+             status: "ONLINE",
+             category: "Server",
+             vendor: "net-snmp",
+             isMonitored: false,
+             lastSyncAt: new Date("2025-12-16T05:43:10.696Z"),
+             availability: undefined
+           }
+         })
+
+Argument `where` of type DeviceWhereUniqueInput needs at least one of `id` or `opmanagerId` arguments. Available options are marked with ?.
+❌ Failed to upsert device undefined: PrismaClientValidationError: 
+Invalid `prisma.device.upsert()` invocation in
+D:\monitoring-dashboard\src\services\collector\device.ts:34:41
+
+  31 else if (opType.includes('storage')) type = DeviceType.STORAGE;
+  32 
+  33 try {
+→ 34     await prisma.device.upsert({
+           where: {
+             opmanagerId: undefined,
+         ?   id?: String,
+         ?   AND?: DeviceWhereInput | DeviceWhereInput[],
+         ?   OR?: DeviceWhereInput[],
+         ?   NOT?: DeviceWhereInput | DeviceWhereInput[],
+         ?   name?: StringFilter | String,
+         ?   displayName?: StringNullableFilter | String | Null,
+         ?   type?: EnumDeviceTypeFilter | DeviceType,
+         ?   category?: StringNullableFilter | String | Null,
+         ?   ipAddress?: StringFilter | String,
+         ?   macAddress?: StringNullableFilter | String | Null,
+         ?   vendor?: StringNullableFilter | String | Null,
+         ?   model?: StringNullableFilter | String | Null,
+         ?   serialNumber?: StringNullableFilter | String | Null,
+         ?   osType?: EnumOSTypeNullableFilter | OSType | Null,
+         ?   osVersion?: StringNullableFilter | String | Null,
+         ?   location?: StringNullableFilter | String | Null,
+         ?   status?: EnumDeviceStatusFilter | DeviceStatus,
+         ?   availability?: FloatNullableFilter | Float | Null,
+         ?   isMonitored?: BoolFilter | Boolean,
+         ?   createdAt?: DateTimeFilter | DateTime,
+         ?   updatedAt?: DateTimeFilter | DateTime,
+         ?   lastSyncAt?: DateTimeNullableFilter | DateTime | Null,
+         ?   interfaces?: InterfaceListRelationFilter,
+         ?   metrics?: DeviceMetricListRelationFilter,
+         ?   alarms?: AlarmListRelationFilter,
+         ?   topologyNodes?: TopologyNodeListRelationFilter
+           },
+           update: {
+             displayName: "ecs-121-36-242-5.compute.hwclouds-dns.com",
+             type: "OTHER",
+             ipAddress: undefined,
+             status: "ONLINE",
+             category: "Server",
+             vendor: "net-snmp",
+             isMonitored: false,
+             lastSyncAt: new Date("2025-12-16T05:43:10.696Z"),
+             availability: undefined
+           },
+           create: {
+             opmanagerId: undefined,
+             name: undefined,
+             displayName: "ecs-121-36-242-5.compute.hwclouds-dns.com",
+             type: "OTHER",
+             ipAddress: undefined,
+             status: "ONLINE",
+             category: "Server",
+             vendor: "net-snmp",
+             isMonitored: false,
+             lastSyncAt: new Date("2025-12-16T05:43:10.696Z"),
+             availability: undefined
+           }
+         })
+
+Argument `where` of type DeviceWhereUniqueInput needs at least one of `id` or `opmanagerId` arguments. Available options are marked with ?.
+    at wn (D:\monitoring-dashboard\node_modules\@prisma\client\runtime\library.js:29:1363)
+    at $n.handleRequestError (D:\monitoring-dashboard\node_modules\@prisma\client\runtime\library.js:121:6958)
+    at $n.handleAndLogRequestError (D:\monitoring-dashboard\node_modules\@prisma\client\runtime\library.js:121:6623)
+    at $n.request (D:\monitoring-dashboard\node_modules\@prisma\client\runtime\library.js:121:6307)
+    at async l (D:\monitoring-dashboard\node_modules\@prisma\client\runtime\library.js:130:9633)
+    at async DeviceCollector.syncDevices (D:\monitoring-dashboard\src\services\collector\device.ts:34:21)
+    at async main (D:\monitoring-dashboard\scripts\run-collector-once.ts:7:9) {
+  clientVersion: '5.22.0'
+}
+Payload: {
+  opmanagerId: undefined,
+  displayName: 'ecs-121-36-242-5.compute.hwclouds-dns.com',
+  type: 'OTHER',
+  ipAddress: undefined,
+  status: 'ONLINE',
+  category: 'Server',
+  vendor: 'net-snmp',
+  isMonitored: false,
+  availability: undefined
+}
+prisma:error 
+Invalid `prisma.device.upsert()` invocation in
+D:\monitoring-dashboard\src\services\collector\device.ts:34:41
+
+  31 else if (opType.includes('storage')) type = DeviceType.STORAGE;
+  32 
+  33 try {
+→ 34     await prisma.device.upsert({
+           where: {
+             opmanagerId: undefined,
+         ?   id?: String,
+         ?   AND?: DeviceWhereInput | DeviceWhereInput[],
+         ?   OR?: DeviceWhereInput[],
+         ?   NOT?: DeviceWhereInput | DeviceWhereInput[],
+         ?   name?: StringFilter | String,
+         ?   displayName?: StringNullableFilter | String | Null,
+         ?   type?: EnumDeviceTypeFilter | DeviceType,
+         ?   category?: StringNullableFilter | String | Null,
+         ?   ipAddress?: StringFilter | String,
+         ?   macAddress?: StringNullableFilter | String | Null,
+         ?   vendor?: StringNullableFilter | String | Null,
+         ?   model?: StringNullableFilter | String | Null,
+         ?   serialNumber?: StringNullableFilter | String | Null,
+         ?   osType?: EnumOSTypeNullableFilter | OSType | Null,
+         ?   osVersion?: StringNullableFilter | String | Null,
+         ?   location?: StringNullableFilter | String | Null,
+         ?   status?: EnumDeviceStatusFilter | DeviceStatus,
+         ?   availability?: FloatNullableFilter | Float | Null,
+         ?   isMonitored?: BoolFilter | Boolean,
+         ?   createdAt?: DateTimeFilter | DateTime,
+         ?   updatedAt?: DateTimeFilter | DateTime,
+         ?   lastSyncAt?: DateTimeNullableFilter | DateTime | Null,
+         ?   interfaces?: InterfaceListRelationFilter,
+         ?   metrics?: DeviceMetricListRelationFilter,
+         ?   alarms?: AlarmListRelationFilter,
+         ?   topologyNodes?: TopologyNodeListRelationFilter
+           },
+           update: {
+             displayName: "ecs-124-71-204-145.compute.hwclouds-dns.com",
+             type: "OTHER",
+             ipAddress: undefined,
+             status: "ONLINE",
+             category: "Server",
+             vendor: "net-snmp",
+             isMonitored: false,
+             lastSyncAt: new Date("2025-12-16T05:43:10.777Z"),
+             availability: undefined
+           },
+           create: {
+             opmanagerId: undefined,
+             name: undefined,
+             displayName: "ecs-124-71-204-145.compute.hwclouds-dns.com",
+             type: "OTHER",
+             ipAddress: undefined,
+             status: "ONLINE",
+             category: "Server",
+             vendor: "net-snmp",
+             isMonitored: false,
+             lastSyncAt: new Date("2025-12-16T05:43:10.777Z"),
+             availability: undefined
+           }
+         })
+
+Argument `where` of type DeviceWhereUniqueInput needs at least one of `id` or `opmanagerId` arguments. Available options are marked with ?.
+❌ Failed to upsert device undefined: PrismaClientValidationError: 
+Invalid `prisma.device.upsert()` invocation in
+D:\monitoring-dashboard\src\services\collector\device.ts:34:41
+
+  31 else if (opType.includes('storage')) type = DeviceType.STORAGE;
+  32 
+  33 try {
+→ 34     await prisma.device.upsert({
+           where: {
+             opmanagerId: undefined,
+         ?   id?: String,
+         ?   AND?: DeviceWhereInput | DeviceWhereInput[],
+         ?   OR?: DeviceWhereInput[],
+         ?   NOT?: DeviceWhereInput | DeviceWhereInput[],
+         ?   name?: StringFilter | String,
+         ?   displayName?: StringNullableFilter | String | Null,
+         ?   type?: EnumDeviceTypeFilter | DeviceType,
+         ?   category?: StringNullableFilter | String | Null,
+         ?   ipAddress?: StringFilter | String,
+         ?   macAddress?: StringNullableFilter | String | Null,
+         ?   vendor?: StringNullableFilter | String | Null,
+         ?   model?: StringNullableFilter | String | Null,
+         ?   serialNumber?: StringNullableFilter | String | Null,
+         ?   osType?: EnumOSTypeNullableFilter | OSType | Null,
+         ?   osVersion?: StringNullableFilter | String | Null,
+         ?   location?: StringNullableFilter | String | Null,
+         ?   status?: EnumDeviceStatusFilter | DeviceStatus,
+         ?   availability?: FloatNullableFilter | Float | Null,
+         ?   isMonitored?: BoolFilter | Boolean,
+         ?   createdAt?: DateTimeFilter | DateTime,
+         ?   updatedAt?: DateTimeFilter | DateTime,
+         ?   lastSyncAt?: DateTimeNullableFilter | DateTime | Null,
+         ?   interfaces?: InterfaceListRelationFilter,
+         ?   metrics?: DeviceMetricListRelationFilter,
+         ?   alarms?: AlarmListRelationFilter,
+         ?   topologyNodes?: TopologyNodeListRelationFilter
+           },
+           update: {
+             displayName: "ecs-124-71-204-145.compute.hwclouds-dns.com",
+             type: "OTHER",
+             ipAddress: undefined,
+             status: "ONLINE",
+             category: "Server",
+             vendor: "net-snmp",
+             isMonitored: false,
+             lastSyncAt: new Date("2025-12-16T05:43:10.777Z"),
+             availability: undefined
+           },
+           create: {
+             opmanagerId: undefined,
+             name: undefined,
+             displayName: "ecs-124-71-204-145.compute.hwclouds-dns.com",
+             type: "OTHER",
+             ipAddress: undefined,
+             status: "ONLINE",
+             category: "Server",
+             vendor: "net-snmp",
+             isMonitored: false,
+             lastSyncAt: new Date("2025-12-16T05:43:10.777Z"),
+             availability: undefined
+           }
+         })
+
+Argument `where` of type DeviceWhereUniqueInput needs at least one of `id` or `opmanagerId` arguments. Available options are marked with ?.
+    at wn (D:\monitoring-dashboard\node_modules\@prisma\client\runtime\library.js:29:1363)
+    at $n.handleRequestError (D:\monitoring-dashboard\node_modules\@prisma\client\runtime\library.js:121:6958)
+    at $n.handleAndLogRequestError (D:\monitoring-dashboard\node_modules\@prisma\client\runtime\library.js:121:6623)
+    at $n.request (D:\monitoring-dashboard\node_modules\@prisma\client\runtime\library.js:121:6307)
+    at async l (D:\monitoring-dashboard\node_modules\@prisma\client\runtime\library.js:130:9633)
+    at async DeviceCollector.syncDevices (D:\monitoring-dashboard\src\services\collector\device.ts:34:21)
+    at async main (D:\monitoring-dashboard\scripts\run-collector-once.ts:7:9) {
+  clientVersion: '5.22.0'
+}
+Payload: {
+  opmanagerId: undefined,
+  displayName: 'ecs-124-71-204-145.compute.hwclouds-dns.com',
+  type: 'OTHER',
+  ipAddress: undefined,
+  status: 'ONLINE',
+  category: 'Server',
+  vendor: 'net-snmp',
+  isMonitored: false,
+  availability: undefined
+}
+prisma:error 
+Invalid `prisma.device.upsert()` invocation in
+D:\monitoring-dashboard\src\services\collector\device.ts:34:41
+
+  31 else if (opType.includes('storage')) type = DeviceType.STORAGE;
+  32 
+  33 try {
+→ 34     await prisma.device.upsert({
+           where: {
+             opmanagerId: undefined,
+         ?   id?: String,
+         ?   AND?: DeviceWhereInput | DeviceWhereInput[],
+         ?   OR?: DeviceWhereInput[],
+         ?   NOT?: DeviceWhereInput | DeviceWhereInput[],
+         ?   name?: StringFilter | String,
+         ?   displayName?: StringNullableFilter | String | Null,
+         ?   type?: EnumDeviceTypeFilter | DeviceType,
+         ?   category?: StringNullableFilter | String | Null,
+         ?   ipAddress?: StringFilter | String,
+         ?   macAddress?: StringNullableFilter | String | Null,
+         ?   vendor?: StringNullableFilter | String | Null,
+         ?   model?: StringNullableFilter | String | Null,
+         ?   serialNumber?: StringNullableFilter | String | Null,
+         ?   osType?: EnumOSTypeNullableFilter | OSType | Null,
+         ?   osVersion?: StringNullableFilter | String | Null,
+         ?   location?: StringNullableFilter | String | Null,
+         ?   status?: EnumDeviceStatusFilter | DeviceStatus,
+         ?   availability?: FloatNullableFilter | Float | Null,
+         ?   isMonitored?: BoolFilter | Boolean,
+         ?   createdAt?: DateTimeFilter | DateTime,
+         ?   updatedAt?: DateTimeFilter | DateTime,
+         ?   lastSyncAt?: DateTimeNullableFilter | DateTime | Null,
+         ?   interfaces?: InterfaceListRelationFilter,
+         ?   metrics?: DeviceMetricListRelationFilter,
+         ?   alarms?: AlarmListRelationFilter,
+         ?   topologyNodes?: TopologyNodeListRelationFilter
+           },
+           update: {
+             displayName: "ecs-504d",
+             type: "OTHER",
+             ipAddress: undefined,
+             status: "ONLINE",
+             category: "Server",
+             vendor: "net-snmp",
+             isMonitored: false,
+             lastSyncAt: new Date("2025-12-16T05:43:10.780Z"),
+             availability: undefined
+           },
+           create: {
+             opmanagerId: undefined,
+             name: undefined,
+             displayName: "ecs-504d",
+             type: "OTHER",
+             ipAddress: undefined,
+             status: "ONLINE",
+             category: "Server",
+             vendor: "net-snmp",
+             isMonitored: false,
+             lastSyncAt: new Date("2025-12-16T05:43:10.780Z"),
+             availability: undefined
+           }
+         })
+
+Argument `where` of type DeviceWhereUniqueInput needs at least one of `id` or `opmanagerId` arguments. Available options are marked with ?.
+❌ Failed to upsert device undefined: PrismaClientValidationError: 
+Invalid `prisma.device.upsert()` invocation in
+D:\monitoring-dashboard\src\services\collector\device.ts:34:41
+
+  31 else if (opType.includes('storage')) type = DeviceType.STORAGE;
+  32 
+  33 try {
+→ 34     await prisma.device.upsert({
+           where: {
+             opmanagerId: undefined,
+         ?   id?: String,
+         ?   AND?: DeviceWhereInput | DeviceWhereInput[],
+         ?   OR?: DeviceWhereInput[],
+         ?   NOT?: DeviceWhereInput | DeviceWhereInput[],
+         ?   name?: StringFilter | String,
+         ?   displayName?: StringNullableFilter | String | Null,
+         ?   type?: EnumDeviceTypeFilter | DeviceType,
+         ?   category?: StringNullableFilter | String | Null,
+         ?   ipAddress?: StringFilter | String,
+         ?   macAddress?: StringNullableFilter | String | Null,
+         ?   vendor?: StringNullableFilter | String | Null,
+         ?   model?: StringNullableFilter | String | Null,
+         ?   serialNumber?: StringNullableFilter | String | Null,
+         ?   osType?: EnumOSTypeNullableFilter | OSType | Null,
+         ?   osVersion?: StringNullableFilter | String | Null,
+         ?   location?: StringNullableFilter | String | Null,
+         ?   status?: EnumDeviceStatusFilter | DeviceStatus,
+         ?   availability?: FloatNullableFilter | Float | Null,
+         ?   isMonitored?: BoolFilter | Boolean,
+         ?   createdAt?: DateTimeFilter | DateTime,
+         ?   updatedAt?: DateTimeFilter | DateTime,
+         ?   lastSyncAt?: DateTimeNullableFilter | DateTime | Null,
+         ?   interfaces?: InterfaceListRelationFilter,
+         ?   metrics?: DeviceMetricListRelationFilter,
+         ?   alarms?: AlarmListRelationFilter,
+         ?   topologyNodes?: TopologyNodeListRelationFilter
+           },
+           update: {
+             displayName: "ecs-504d",
+             type: "OTHER",
+             ipAddress: undefined,
+             status: "ONLINE",
+             category: "Server",
+✅ Synced 0 devices successfully.
+             vendor: "net-snmp",
+             isMonitored: false,
+             lastSyncAt: new Date("2025-12-16T05:43:10.780Z"),
+             availability: undefined
+           },
+           create: {
+             opmanagerId: undefined,
+             name: undefined,
+             displayName: "ecs-504d",
+             type: "OTHER",
+             ipAddress: undefined,
+             status: "ONLINE",
+             category: "Server",
+             vendor: "net-snmp",
+             isMonitored: false,
+             lastSyncAt: new Date("2025-12-16T05:43:10.780Z"),
+             availability: undefined
+           }
+         })
+
+Argument `where` of type DeviceWhereUniqueInput needs at least one of `id` or `opmanagerId` arguments. Available options are marked with ?.
+    at wn (D:\monitoring-dashboard\node_modules\@prisma\client\runtime\library.js:29:1363)
+    at $n.handleRequestError (D:\monitoring-dashboard\node_modules\@prisma\client\runtime\library.js:121:6958)
+    at $n.handleAndLogRequestError (D:\monitoring-dashboard\node_modules\@prisma\client\runtime\library.js:121:6623)
+    at $n.request (D:\monitoring-dashboard\node_modules\@prisma\client\runtime\library.js:121:6307)
+    at async l (D:\monitoring-dashboard\node_modules\@prisma\client\runtime\library.js:130:9633)
+    at async DeviceCollector.syncDevices (D:\monitoring-dashboard\src\services\collector\device.ts:34:21)
+    at async main (D:\monitoring-dashboard\scripts\run-collector-once.ts:7:9) {
+  clientVersion: '5.22.0'
+}
+Payload: {
+  opmanagerId: undefined,
+  displayName: 'ecs-504d',
+  type: 'OTHER',
+  ipAddress: undefined,
+  status: 'ONLINE',
+  category: 'Server',
+  vendor: 'net-snmp',
+  isMonitored: false,
+  availability: undefined
+}
+prisma:query SELECT COUNT(*) FROM (SELECT "public"."Device"."id" FROM "public"."Device" WHERE 1=1 OFFSET $1) AS "sub"
+✅ Manual Sync Complete. Device Count: 0

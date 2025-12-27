@@ -1,0 +1,258 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==================== 设备表 ====================
+model Device {
+  id            String    @id @default(cuid())
+  opmanagerId   String    @unique
+  name          String
+  displayName   String?
+  type          DeviceType
+  category      String?
+  ipAddress     String
+  macAddress    String?
+  vendor        String?
+  model         String?
+  serialNumber  String?
+  osType        OSType?
+  osVersion     String?
+  location      String?
+  status        DeviceStatus
+  availability  Float?
+  isMonitored   Boolean   @default(true)
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  lastSyncAt    DateTime?
+
+  // 关系
+  interfaces    Interface[]
+  metrics       DeviceMetric[]
+  alarms        Alarm[]
+  topologyNodes TopologyNode[]
+
+  @@index([status])
+  @@index([type])
+  @@index([isMonitored])
+}
+
+enum DeviceType {
+  ROUTER
+  SWITCH
+  FIREWALL
+  SERVER
+  LOAD_BALANCER
+  STORAGE
+  PRINTER
+  OTHER
+}
+
+enum DeviceStatus {
+  ONLINE
+  OFFLINE
+  WARNING
+  ERROR
+}
+
+enum OSType {
+  WINDOWS
+  LINUX
+  UNIX
+  NETWORK_OS
+  OTHER
+}
+
+// ==================== 设备指标表 ====================
+model DeviceMetric {
+  id              String    @id @default(cuid())
+  deviceId        String
+
+  cpuUsage        Float?
+  cpuLoad1m       Float?
+  cpuLoad5m       Float?
+  cpuLoad15m      Float?
+
+  memoryUsage     Float?
+  memoryTotal     BigInt?
+  memoryUsed      BigInt?
+  memoryFree      BigInt?
+
+  diskUsage       Float?
+  diskTotal       BigInt?
+  diskUsed        BigInt?
+  diskFree        BigInt?
+
+  responseTime    Float?
+  packetLoss      Float?
+  uptime          BigInt?
+  temperature     Float?
+
+  timestamp       DateTime
+
+  // 关系
+  device          Device    @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+
+  @@index([deviceId, timestamp(sort: Desc)])
+}
+
+// ==================== 接口表 ====================
+model Interface {
+  id            String          @id @default(cuid())
+  deviceId      String
+  opmanagerId   String          @unique
+  name          String
+  displayName   String?
+  description   String?
+  type          String
+  macAddress    String?
+  speed         BigInt?
+  mtu           Int?
+  ipAddress     String?
+  subnetMask    String?
+  status        InterfaceStatus
+  adminStatus   InterfaceStatus?
+  ifIndex       Int?
+  isMonitored   Boolean         @default(true)
+
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  lastSyncAt    DateTime?
+
+  // 关系
+  device        Device          @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  trafficMetrics TrafficMetric[]
+  topologyEdges TopologyEdge[]
+
+  @@index([deviceId])
+  @@index([status])
+}
+
+enum InterfaceStatus {
+  UP
+  DOWN
+  TESTING
+  DORMANT
+  UNKNOWN
+}
+
+// ==================== 流量指标表 ====================
+model TrafficMetric {
+  id              String    @id @default(cuid())
+  interfaceId     String
+
+  inOctets        BigInt    @default(0)
+  outOctets       BigInt    @default(0)
+  inPackets       BigInt    @default(0)
+  outPackets      BigInt    @default(0)
+
+  inBandwidth     BigInt?
+  outBandwidth    BigInt?
+  inUtilization   Float?
+  outUtilization  Float?
+
+  inErrors        BigInt?
+  outErrors       BigInt?
+  inDiscards      BigInt?
+  outDiscards     BigInt?
+
+  timestamp       DateTime
+
+  // 关系
+  interface       Interface @relation(fields: [interfaceId], references: [id], onDelete: Cascade)
+
+  @@index([interfaceId, timestamp(sort: Desc)])
+}
+
+// ==================== 告警表 ====================
+model Alarm {
+  id              String        @id @default(cuid())
+  opmanagerId     String?
+  deviceId        String
+  severity        AlarmSeverity
+  category        String
+  title           String
+  message         String
+  status          AlarmStatus
+
+  acknowledgedBy  String?
+  acknowledgedAt  DateTime?
+  resolvedBy      String?
+  resolvedAt      DateTime?
+  clearedAt       DateTime?
+
+  occurredAt      DateTime
+  occurrenceCount Int           @default(1)
+  lastOccurrence  DateTime?
+  notes           String?
+
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  // 关系
+  device          Device        @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+
+  @@index([deviceId])
+  @@index([severity])
+  @@index([status])
+  @@index([occurredAt(sort: Desc)])
+}
+
+enum AlarmSeverity {
+  CRITICAL
+  MAJOR
+  MINOR
+  WARNING
+  INFO
+}
+
+enum AlarmStatus {
+  ACTIVE
+  ACKNOWLEDGED
+  RESOLVED
+  CLEARED
+}
+
+// ==================== 拓扑节点表 ====================
+model TopologyNode {
+  id          String    @id @default(cuid())
+  deviceId    String?
+  label       String
+  type        String
+  positionX   Float
+  positionY   Float
+  icon        String?
+  metadata    Json?
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // 关系
+  device      Device?   @relation(fields: [deviceId], references: [id], onDelete: SetNull)
+  sourceEdges TopologyEdge[] @relation("SourceNode")
+  targetEdges TopologyEdge[] @relation("TargetNode")
+}
+
+// ==================== 拓扑连接表 ====================
+model TopologyEdge {
+  id          String    @id @default(cuid())
+  sourceId    String
+  targetId    String
+  label       String?
+  type        String?
+  interfaceId String?
+  metadata    Json?
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // 关系
+  source      TopologyNode @relation("SourceNode", fields: [sourceId], references: [id], onDelete: Cascade)
+  target      TopologyNode @relation("TargetNode", fields: [targetId], references: [id], onDelete: Cascade)
+  interface   Interface?   @relation(fields: [interfaceId], references: [id], onDelete: SetNull)
+}

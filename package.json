@@ -1,0 +1,73 @@
+{
+  "name": "monitoring-dashboard",
+  "version": "1.0.0",
+  "description": "智能监控大屏系统 - 基于Next.js的企业级网络监控平台",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:seed": "prisma db seed",
+    "db:studio": "prisma studio",
+    "db:reset": "prisma migrate reset",
+    "collector": "ts-node --project tsconfig.node.json src/services/collector/start.ts",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,md}\""
+  },
+  "prisma": {
+    "seed": "ts-node --project tsconfig.node.json prisma/seed.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.7.0",
+    "@reactflow/core": "^11.11.4",
+    "@socket.io/redis-adapter": "^8.2.1",
+    "axios": "^1.6.2",
+    "clsx": "^2.1.1",
+    "date-fns": "^3.0.0",
+    "framer-motion": "^10.16.16",
+    "ioredis": "^5.3.2",
+    "lucide-react": "^0.561.0",
+    "next": "14.0.4",
+    "node-cron": "^3.0.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "reactflow": "^11.11.4",
+    "recharts": "^2.10.3",
+    "socket.io": "^4.6.1",
+    "socket.io-client": "^4.6.1",
+    "tailwind-merge": "^3.4.0",
+    "winston": "^3.11.0",
+    "zod": "^3.22.4",
+    "zustand": "^4.4.7"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5",
+    "@types/node-cron": "^3.0.11",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "autoprefixer": "^10.4.16",
+    "eslint": "^8.56.0",
+    "eslint-config-next": "14.0.4",
+    "eslint-config-prettier": "^9.1.0",
+    "postcss": "^8.4.32",
+    "prettier": "^3.1.1",
+    "prisma": "^5.7.0",
+    "tailwindcss": "^3.4.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}

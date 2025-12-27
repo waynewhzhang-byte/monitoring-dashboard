@@ -1,0 +1,188 @@
+=== Testing OpManager APIs for Device Metrics ===
+
+1. Testing getInfrastructureDetailsView...
+
+
+2. Testing getDeviceInfo for ecs-124-71-204-145.compute.hwclouds-dns.com...
+Error: <!doctype html><html lang="en"><head><title>HTTP Status 404 – Not Found</title><style type="text/css">h1 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:22px;} h2 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:16px;} h3 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:14px;} body {font-family:Tahoma,Arial,sans-serif;color:black;background-color:white;} b {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;} p {font-family:Tahoma,Arial,sans-serif;background:white;color:black;font-size:12px;} a {color:black;} a.name {color:black;} .line {height:1px;background-color:#525D76;border:none;}</style></head><body><h1>HTTP Status 404 – Not Found</h1><hr class="line" /><p><b>Type</b> Status Report</p><p><b>Message</b> Not Found</p><p><b>Description</b> The origin server did not find a current representation for the target resource or is not willing to disclose that one exists.</p><hr class="line" /><h3>Apache Tomcat/@VERSION@</h3></body></html>
+
+
+Error: <!doctype html><html lang="en"><head><title>HTTP Status 404 – Not Found</title><style type="text/css">h1 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:22px;} h2 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:16px;} h3 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:14px;} body {font-family:Tahoma,Arial,sans-serif;color:black;background-color:white;} b {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;} p {font-family:Tahoma,Arial,sans-serif;background:white;color:black;font-size:12px;} a {color:black;} a.name {color:black;} .line {height:1px;background-color:#525D76;border:none;}</style></head><body><h1>HTTP Status 404 – Not Found</h1><hr class="line" /><p><b>Type</b> Status Report</p><p><b>Message</b> Not Found</p><p><b>Description</b> The origin server did not find a current representation for the target resource or is not willing to disclose that one exists.</p><hr class="line" /><h3>Apache Tomcat/@VERSION@</h3></body></html>
+3. Testing getDeviceCompleteDetails for ecs-124-71-204-145.compute.hwclouds-dns.com...
+Response: {
+  "nfadetails": {
+    "NFAStatus": "Added",
+    "FlowType": "V5 Flow (0/0 Interface(s) Managed)"
+  },
+  "statusStr": "Clear",
+  "responseTime": "003ms",
+  "format": "d MMM yyyy hh:mm:ss a z",
+  "dnsName": "ecs-124-71-204-145.compute.hwclouds-dns.com",
+  "timeZone": "Asia/Shanghai",
+  "availability": [
+    "Not Monitored,1765814413053,1765858517000",
+    "UP,1765858517000,1765864393053"
+  ],
+  "todayTimeAvail": {
+    "todayStartTime": "1765814413057",
+    "endTimeVal": "1765864393057"
+  },
+  "type": "Linux",
+  "vendorName": "net-snmp",
+  "statusNum": "5",
+  "isStorage": false,
+  "ncmdetails": {
+    "SUMMARY_NOT_AVAILABLE": true
+  },
+  "packetLoss": "0",
+  "configBackup": {
+    "RunningConfig": {},
+    "StartupConfig": {}
+  },
+  "opmdetails": {
+    "Type": "Linux",
+    "dependentDisplayName": "None",
+    "Category": "Server",
+    "displayCategory": "Servers",
+    "PollInterval": "5",
+    "IPAddress": "124.71.204.145",
+    "DNSName": "ecs-124-71-204-145.compute.hwclouds-dns.com",
+    "SysDescription": "",
+    "Monitoring": "ICMP",
+    "UpLinkDependency": "None"
+  },
+  "state": "1",
+  "availdata": {
+    "Down": 0,
+    "Dependent Unavailable": 0,
+    "On Hold": 0,
+    "Not Monitored": 0,
+    "Parent Down": 0,
+    "On Maintenance": 0,
+    "Up": 100
+  }
+}
+
+
+4. Testing getDeviceSummary for ecs-124-71-204-145.compute.hwclouds-dns.com...
+Response: {
+  "hardDiskSize": "NA",
+  "isMSSQLEnabled": false,
+  "isStorageDevice": false,
+  "enableAssetLink": "",
+  "ramSize": "NA",
+  "type": "Linux",
+  "oldVirtualDev": "false",
+  "ISHWMONITORED": false,
+  "deviceName": "ecs-124-71-204-145.compute.hwclouds-dns.com",
+  "moID": "15",
+  "sysDescr": "",
+  "isExchangeEnabled": false,
+  "sysName": "",
+  "state": "1",
+  "isRouter": false,
+  "isInterface": false,
+  "oldVirtualCenter": "false",
+  "statusPollEnabled": true,
+  "hardDiskSizeWithUnit": "NA",
+  "isNFARouter": false,
+  "dependency": "None",
+  "displayCategory": "Server",
+  "entityType": "",
+  "ipAddress": "124.71.204.145",
+  "dName": "124.71.204.145",
+  "Encoding": "ISO-8859-1",
+  "isDeviceExistInMap": false,
+  "vendorName": "net-snmp",
+  "statusNum": "5",
+  "dials": [
+    {
+      "severity": 5,
+      "period": "60",
+      "displayName": "Disk Utilization",
+      "DiagnosticName": "None",
+      "pollKey": "Telnet-DiskUtilization",
+      "dialType": "meter",
+      "thresholdEnabled": "false",
+      "diagnosticsEnabled": false,
+      "protocol": "CLI",
+      "unit": "Percentage",
+      "pollId": "65",
+      "pdName": "Telnet-DiskUtilization",
+      "value": 14
+    },
+    {
+      "severity": 5,
+      "period": "15",
+      "displayName": "Memory Utilization",
+      "DiagnosticName": "Lin-Win-Sol-Memory",
+      "pollKey": "Telnet-MemoryUtilization",
+      "dialType": "meter",
+      "thresholdEnabled": "false",
+      "diagnosticsEnabled": true,
+      "protocol": "CLI",
+      "unit": "Percentage",
+      "pollId": "66",
+      "pdName": "Telnet-MemoryUtilization",
+      "value": 22
+    },
+    {
+      "severity": 5,
+      "period": "15",
+      "displayName": "CPU Utilization",
+      "DiagnosticName": "Lin-Win-Sol-CPU",
+      "pollKey": "Telnet-CPUUtilization",
+      "dialType": "meter",
+      "thresholdEnabled": "false",
+      "diagnosticsEnabled": true,
+      "protocol": "CLI",
+      "unit": "Percentage",
+      "pollId": "64",
+      "pdName": "Telnet-CPUUtilization",
+      "value": 1
+    }
+  ],
+  "customLinks": [],
+  "parentCategory": "Server",
+  "nfaID": 0,
+  "isDHCP": false,
+  "isAutoDiscovered": false,
+  "status": "Clear",
+  "isSNMP": false,
+  "deviceProtocol": "CLI",
+  "statusStr": "Clear",
+  "pollUsingIPorDNS": "PollUsingIP",
+  "displayName": "ecs-124-71-204-145.compute.hwclouds-dns.com",
+  "dnsName": "ecs-124-71-204-145.compute.hwclouds-dns.com",
+  "availability": [
+    "Not Monitored,1765814413474,1765858517000",
+    "UP,1765858517000,1765864393474"
+  ],
+  "snmpport": "161",
+  "isStorage": false,
+  "trimmedsysDescr": "",
+  "pollPeriod": "5",
+  "managed": "true",
+  "isSwitch": false,
+  "availdata": {
+    "Down": 0,
+    "Dependent Unavailable": 0,
+    "On Hold": 0,
+    "Not Monitored": 0,
+    "Parent Down": 0,
+    "On Maintenance": 0,
+    "Up": 100
+  },
+  "pollUsing": "ICMP",
+  "responseTime": "003ms",
+  "isNCMDevice": false,
+  "statusImg": "/images/devices/status5.gif",
+  "isvCenter": false,
+  "enableVIEvents": false,
+  "packetLoss": "0",
+  "isNetwork": false,
+  "isADEnabled": false,
+  "isDevicePingable": "true",
+  "category": "Server",
+  "ramSizeWithUnit": "NA"
+}
