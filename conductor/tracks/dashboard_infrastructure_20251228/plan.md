@@ -4,7 +4,7 @@
 Goal: Establish the types and database schema for dashboards.
 
 - [x] Task: Define Zod schemas for Dashboard configurations in src/types/dashboard-config.ts [a36627d]
-- [ ] Task: Update Prisma schema with Dashboard model and run migration
+- [x] Task: Update Prisma schema with Dashboard model and run migration [054e80d]
 - [ ] Task: Conductor - User Manual Verification 'Foundation & Data Modeling' (Protocol in workflow.md)
 
 ## Phase 2: Backend Persistence API
