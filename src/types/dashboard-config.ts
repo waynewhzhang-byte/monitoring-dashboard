@@ -1,3 +1,5 @@
+import { z } from 'zod';
+
 /**
  * 大屏配置类型定义
  */
@@ -36,142 +38,156 @@ export enum WidgetType {
   CUSTOM = 'custom'
 }
 
+export const WidgetTypeSchema = z.nativeEnum(WidgetType);
+
 // 数据源配置
-export interface DataSourceConfig {
+export const DataSourceConfigSchema = z.object({
   // API端点
-  endpoint: string;
+  endpoint: z.string(),
 
   // 请求方法
-  method?: 'GET' | 'POST';
+  method: z.enum(['GET', 'POST']).optional().default('GET'),
 
   // 请求参数
-  params?: Record<string, any>;
+  params: z.record(z.any()).optional(),
 
   // 刷新间隔（毫秒）
-  refreshInterval?: number;
+  refreshInterval: z.number().optional(),
 
   // 数据转换函数名（可选）
-  transform?: string;
+  transform: z.string().optional(),
 
   // 是否启用WebSocket实时更新
-  realtime?: boolean;
+  realtime: z.boolean().optional(),
 
   // WebSocket事件名
-  realtimeEvent?: string;
-}
+  realtimeEvent: z.string().optional(),
+});
+
+export type DataSourceConfig = z.infer<typeof DataSourceConfigSchema>;
 
 // Widget位置和尺寸
-export interface WidgetLayout {
+export const WidgetLayoutSchema = z.object({
   // 网格列位置 (1-24)
-  col: number;
+  col: z.number(),
 
   // 网格行位置 (1-无限)
-  row: number;
+  row: z.number(),
 
   // 跨越列数
-  colSpan: number;
+  colSpan: z.number(),
 
   // 跨越行数
-  rowSpan: number;
+  rowSpan: z.number(),
 
   // 最小宽度（可选）
-  minWidth?: number;
+  minWidth: z.number().optional(),
 
   // 最小高度（可选）
-  minHeight?: number;
-}
+  minHeight: z.number().optional(),
+});
+
+export type WidgetLayout = z.infer<typeof WidgetLayoutSchema>;
 
 // Widget配置
-export interface WidgetConfig {
+export const WidgetConfigSchema = z.object({
   // 唯一标识
-  id: string;
+  id: z.string(),
 
   // Widget类型
-  type: WidgetType;
+  type: WidgetTypeSchema,
 
   // 标题
-  title?: string;
+  title: z.string().optional(),
 
   // 布局配置
-  layout: WidgetLayout;
+  layout: WidgetLayoutSchema,
 
   // 数据源
-  dataSource?: DataSourceConfig;
+  dataSource: DataSourceConfigSchema.optional(),
 
   // Widget特定配置
-  config?: Record<string, any>;
+  config: z.record(z.any()).optional(),
 
   // 样式配置
-  style?: {
-    backgroundColor?: string;
-    borderColor?: string;
-    textColor?: string;
-    className?: string;
-  };
+  style: z.object({
+    backgroundColor: z.string().optional(),
+    borderColor: z.string().optional(),
+    textColor: z.string().optional(),
+    className: z.string().optional(),
+  }).optional(),
 
   // 是否可见
-  visible?: boolean;
-}
+  visible: z.boolean().optional().default(true),
+});
+
+export type WidgetConfig = z.infer<typeof WidgetConfigSchema>;
 
 // 大屏布局配置
-export interface DashboardLayout {
+export const DashboardLayoutSchema = z.object({
   // 网格列数（默认24）
-  columns?: number;
+  columns: z.number().optional().default(24),
 
   // 网格行高（px）
-  rowHeight?: number;
+  rowHeight: z.number().optional().default(80),
 
   // 间距（px）
-  gap?: number;
-}
+  gap: z.number().optional().default(16),
+});
+
+export type DashboardLayout = z.infer<typeof DashboardLayoutSchema>;
 
 // 大屏主题配置
-export interface DashboardTheme {
+export const DashboardThemeSchema = z.object({
   // 主题名称
-  name: string;
+  name: z.string(),
 
   // 背景色
-  backgroundColor?: string;
+  backgroundColor: z.string().optional(),
 
   // 主色调
-  primaryColor?: string;
+  primaryColor: z.string().optional(),
 
   // 文字颜色
-  textColor?: string;
+  textColor: z.string().optional(),
 
   // 边框颜色
-  borderColor?: string;
+  borderColor: z.string().optional(),
 
   // 自定义CSS类
-  customClass?: string;
-}
+  customClass: z.string().optional(),
+});
+
+export type DashboardTheme = z.infer<typeof DashboardThemeSchema>;
 
 // 完整的大屏配置
-export interface DashboardConfig {
+export const DashboardConfigSchema = z.object({
   // 配置ID
-  id: string;
+  id: z.string(),
 
   // 配置名称
-  name: string;
+  name: z.string(),
 
   // 描述
-  description?: string;
+  description: z.string().optional(),
 
   // 布局配置
-  layout: DashboardLayout;
+  layout: DashboardLayoutSchema,
 
   // 主题配置
-  theme?: DashboardTheme;
+  theme: DashboardThemeSchema.optional(),
 
   // Widget列表
-  widgets: WidgetConfig[];
+  widgets: z.array(WidgetConfigSchema),
 
   // 创建时间
-  createdAt?: string;
+  createdAt: z.string().optional(),
 
   // 更新时间
-  updatedAt?: string;
-}
+  updatedAt: z.string().optional(),
+});
+
+export type DashboardConfig = z.infer<typeof DashboardConfigSchema>;
 
 // 预设配置模板
 export const DashboardTemplates = {
