@@ -12,6 +12,11 @@ jest.mock('../WidgetRenderer', () => ({
   WidgetRenderer: () => <div data-testid="widget-renderer" />
 }));
 
+jest.mock('react-grid-layout', () => ({
+  Responsive: ({ children }: any) => <div data-testid="responsive-grid-layout">{children}</div>,
+  WidthProvider: (cmp: any) => cmp,
+}));
+
 describe('DashboardRenderer', () => {
   const mockDashboard = {
     id: 'test-db',
@@ -49,5 +54,16 @@ describe('DashboardRenderer', () => {
     
     // Check if it renders
     expect(document.querySelector('.dashboard-container')).toBeInTheDocument();
+  });
+
+  it('uses ResponsiveGridLayout when in editing mode', () => {
+    (useDashboardStore as unknown as jest.Mock).mockReturnValue({
+      activeDashboard: mockDashboard,
+      isEditing: true
+    });
+
+    render(<DashboardRenderer />);
+    
+    expect(screen.getByTestId('responsive-grid-layout')).toBeInTheDocument();
   });
 });
