@@ -24,6 +24,6 @@ Goal: Implement a Zustand store to manage dashboard state during editing.
 ## Phase 4: Interactive UI & Edit Mode
 Goal: Add drag-and-drop and resize capabilities to the dashboard.
 
-- [ ] Task: Install and integrate eact-grid-layout into DashboardRenderer
+- [x] Task: Install and integrate react-grid-layout into DashboardRenderer [d3e4d11]
 - [ ] Task: Implement "Edit Mode" toggle with Save/Cancel functionality
 - [ ] Task: Conductor - User Manual Verification 'Interactive UI & Edit Mode' (Protocol in workflow.md)
