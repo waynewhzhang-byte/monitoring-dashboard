@@ -10,7 +10,7 @@ Goal: Establish the types and database schema for dashboards.
 ## Phase 2: Backend Persistence API
 Goal: Create endpoints to save and retrieve dashboard configurations.
 
-- [ ] Task: Implement GET /api/dashboards/[id] for loading a dashboard
+- [x] Task: Implement GET /api/dashboards/[id] for loading a dashboard [fa3f35e]
 - [ ] Task: Implement POST /api/dashboards for saving/updating a dashboard
 - [ ] Task: Conductor - User Manual Verification 'Backend Persistence API' (Protocol in workflow.md)
 
