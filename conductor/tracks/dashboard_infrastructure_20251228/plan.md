@@ -3,7 +3,7 @@
 ## Phase 1: Foundation & Data Modeling
 Goal: Establish the types and database schema for dashboards.
 
-- [ ] Task: Define Zod schemas for Dashboard configurations in src/types/dashboard-config.ts
+- [x] Task: Define Zod schemas for Dashboard configurations in src/types/dashboard-config.ts [a36627d]
 - [ ] Task: Update Prisma schema with Dashboard model and run migration
 - [ ] Task: Conductor - User Manual Verification 'Foundation & Data Modeling' (Protocol in workflow.md)
 
