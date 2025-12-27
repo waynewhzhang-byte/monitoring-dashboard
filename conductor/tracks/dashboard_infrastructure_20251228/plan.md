@@ -18,7 +18,7 @@ Goal: Create endpoints to save and retrieve dashboard configurations.
 Goal: Implement a Zustand store to manage dashboard state during editing.
 
 - [x] Task: Create src/stores/useDashboardStore.ts with layout modification actions [990794c]
-- [ ] Task: Integrate the store into DashboardRenderer
+- [x] Task: Integrate the store into DashboardRenderer [5f723af]
 - [ ] Task: Conductor - User Manual Verification 'State Management' (Protocol in workflow.md)
 
 ## Phase 4: Interactive UI & Edit Mode
