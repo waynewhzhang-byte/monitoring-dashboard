@@ -7,12 +7,12 @@ Goal: Establish the types and database schema for dashboards.
 - [x] Task: Update Prisma schema with Dashboard model and run migration [054e80d]
 - [x] Task: Conductor - User Manual Verification 'Foundation & Data Modeling' (Protocol in workflow.md)
 
-## Phase 2: Backend Persistence API
+## Phase 2: Backend Persistence API [checkpoint: 1f571bb]
 Goal: Create endpoints to save and retrieve dashboard configurations.
 
 - [x] Task: Implement GET /api/dashboards/[id] for loading a dashboard [fa3f35e]
 - [x] Task: Implement POST /api/dashboards for saving/updating a dashboard [f9b33da]
-- [ ] Task: Conductor - User Manual Verification 'Backend Persistence API' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Backend Persistence API' (Protocol in workflow.md)
 
 ## Phase 3: State Management
 Goal: Implement a Zustand store to manage dashboard state during editing.
