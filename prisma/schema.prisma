@@ -256,3 +256,16 @@ model TopologyEdge {
   target      TopologyNode @relation("TargetNode", fields: [targetId], references: [id], onDelete: Cascade)
   interface   Interface?   @relation(fields: [interfaceId], references: [id], onDelete: SetNull)
 }
+
+// ==================== 大屏配置表 ====================
+model Dashboard {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  layout      Json     // DashboardLayout
+  widgets     Json     // WidgetConfig[]
+  theme       Json?    // DashboardTheme
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
