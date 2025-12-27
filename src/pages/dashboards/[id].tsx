@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { DashboardConfig } from '@/types/dashboard-config';
 import { DashboardRenderer } from '@/components/dashboard-builder/DashboardRenderer';
+import { DashboardToolbar } from '@/components/dashboard-builder/DashboardToolbar';
+import { useDashboardStore } from '@/stores/useDashboardStore';
 
 /**
  * 动态大屏展示页面
@@ -10,7 +12,8 @@ import { DashboardRenderer } from '@/components/dashboard-builder/DashboardRende
 export default function DashboardDisplay() {
   const router = useRouter();
   const { id } = router.query;
-  const [config, setConfig] = useState<DashboardConfig | null>(null);
+  const { setDashboard, activeDashboard } = useDashboardStore();
+  
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -25,7 +28,12 @@ export default function DashboardDisplay() {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        router.push('/dashboards');
+        if (document.fullscreenElement) {
+          document.exitFullscreen();
+          setIsFullscreen(false);
+        } else {
+          router.push('/dashboards');
+        }
       }
     };
 
@@ -38,13 +46,22 @@ export default function DashboardDisplay() {
       setLoading(true);
       setError(null);
 
-      const response = await fetch(`/api/dashboard-configs/${dashboardId}`);
-      const result = await response.json();
-
-      if (result.success) {
-        setConfig(result.data);
+      // 尝试从新的 API 加载
+      const response = await fetch(`/api/dashboards/${dashboardId}`);
+      
+      if (response.ok) {
+        const result = await response.json();
+        setDashboard(result);
       } else {
-        setError(result.error || 'Failed to load dashboard configuration');
+        // 降级到旧的 API (预设模板)
+        const oldResponse = await fetch(`/api/dashboard-configs/${dashboardId}`);
+        const oldResult = await oldResponse.json();
+        
+        if (oldResult.success) {
+          setDashboard(oldResult.data);
+        } else {
+          setError(oldResult.error || 'Failed to load dashboard configuration');
+        }
       }
     } catch (err) {
       console.error('Error fetching dashboard config:', err);
@@ -79,7 +96,7 @@ export default function DashboardDisplay() {
     );
   }
 
-  if (error || !config) {
+  if (error || !activeDashboard) {
     return (
       <div className="w-screen h-screen bg-slate-900 flex items-center justify-center">
         <div className="text-center">
@@ -97,47 +114,47 @@ export default function DashboardDisplay() {
   }
 
   return (
-    <div className="w-screen h-screen overflow-hidden relative">
+    <div className="w-screen h-screen overflow-hidden relative bg-slate-950">
       {/* 顶部控制栏 */}
-      <div className="absolute top-4 left-4 right-4 z-50 flex items-center justify-between">
+      <div className="absolute top-4 left-4 right-4 z-50 flex items-center justify-between pointer-events-none">
         <button
           onClick={handleBack}
-          className="px-4 py-2 bg-slate-800/80 backdrop-blur-sm text-white rounded-lg
+          className="pointer-events-auto px-4 py-2 bg-slate-800/80 backdrop-blur-sm text-white rounded-lg
                      hover:bg-slate-700 transition-colors border border-slate-600
-                     flex items-center gap-2"
+                     flex items-center gap-2 shadow-lg"
         >
           <span>←</span>
           <span>返回</span>
         </button>
 
-        <div className="flex items-center gap-3">
-          <div className="px-4 py-2 bg-slate-800/80 backdrop-blur-sm text-white rounded-lg border border-slate-600">
-            <span className="text-slate-400 mr-2">当前大屏:</span>
-            <span className="font-semibold">{config.name}</span>
-          </div>
+        <div className="flex items-center gap-3 pointer-events-auto">
+          <DashboardToolbar />
 
           <button
             onClick={toggleFullscreen}
             className="px-4 py-2 bg-slate-800/80 backdrop-blur-sm text-white rounded-lg
-                       hover:bg-slate-700 transition-colors border border-slate-600"
+                       hover:bg-slate-700 transition-colors border border-slate-600 shadow-lg"
             title={isFullscreen ? '退出全屏' : '进入全屏'}
           >
-            {isFullscreen ? '⊟' : '⊡'}
+            {isFullscreen ? '退出全屏' : '全屏'}
           </button>
         </div>
       </div>
 
       {/* 大屏内容 */}
       <div className="w-full h-full">
-        <DashboardRenderer config={config} />
+        <DashboardRenderer />
       </div>
 
       {/* 底部提示 */}
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-50">
-        <div className="px-4 py-2 bg-slate-800/60 backdrop-blur-sm text-slate-400 text-sm rounded-lg border border-slate-600">
-          按 ESC 键退出 | 点击返回按钮切换大屏
+      {!activeDashboard.widgets.length && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="text-slate-500 text-xl bg-slate-900/50 p-8 rounded-2xl border border-slate-800 border-dashed">
+            当前大屏没有任何组件，点击右上角编辑开始添加
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
+
