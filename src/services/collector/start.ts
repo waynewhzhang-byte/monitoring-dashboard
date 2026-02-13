@@ -33,7 +33,7 @@ async function startScheduler() {
     const topologyIntervalSeconds = env.SYNC_TOPOLOGY_INTERVAL;
     const metricsIntervalSeconds = env.COLLECT_METRICS_INTERVAL;
     const alarmsIntervalSeconds = env.COLLECT_ALARMS_INTERVAL;
-    const trafficIntervalSeconds = env.COLLECT_METRICS_INTERVAL; // 与 metrics 相同频率（60秒）
+    const trafficIntervalSeconds = env.COLLECT_TRAFFIC_INTERVAL;
 
     console.log('🕒 Scheduler intervals (seconds):', {
         topology: topologyIntervalSeconds,

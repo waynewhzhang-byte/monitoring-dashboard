@@ -21,12 +21,24 @@ const globalForRedis = globalThis as unknown as {
 // Redis 可用性标志
 let isRedisAvailable = true;
 
+// 解析 Redis URL（安全处理各种格式：redis://、rediss://、带用户名密码等）
+const parsedRedisUrl = (() => {
+    if (!env.REDIS_URL) return null;
+    try {
+        return new URL(env.REDIS_URL);
+    } catch {
+        console.error('❌ REDIS_URL 格式无效，使用默认配置');
+        return null;
+    }
+})();
+
 // Redis 客户端配置
 const redisConfig = {
     // 基础配置
-    host: env.REDIS_URL?.replace('redis://', '').split(':')[0] || 'localhost',
-    port: parseInt(env.REDIS_URL?.split(':')[2] || '6379'),
-    password: env.REDIS_PASSWORD || undefined,
+    host: parsedRedisUrl?.hostname || 'localhost',
+    port: parsedRedisUrl?.port ? parseInt(parsedRedisUrl.port) : 6379,
+    password: env.REDIS_PASSWORD || parsedRedisUrl?.password || undefined,
+    tls: parsedRedisUrl?.protocol === 'rediss:' ? {} : undefined,
 
     // 连接池配置
     maxRetriesPerRequest: 3,

@@ -32,24 +32,29 @@ const envSchema = z.object({
   HOSTNAME: z.string().default('0.0.0.0'),
 
   // 数据采集配置（单位：秒，均可通过环境变量后续调整）
-  /** 设备采集实时性能间隔，默认 1200（20 分钟） */
+  /** 设备采集实时性能间隔，默认 300（5 分钟） */
   COLLECT_METRICS_INTERVAL: z
     .string()
-    .default('1200')
+    .default('300')
     .transform((val) => parseInt(val, 10)),
-  /** 接口采集/同步间隔，默认 1200（20 分钟），供定时任务或前端刷新参考 */
+  /** 接口采集/同步间隔，默认 300（5 分钟），供定时任务或前端刷新参考 */
   COLLECT_INTERFACE_INTERVAL: z
     .string()
-    .default('1200')
+    .default('300')
     .transform((val) => parseInt(val, 10)),
   COLLECT_ALARMS_INTERVAL: z
     .string()
-    .default('120')
+    .default('60')
     .transform((val) => parseInt(val, 10)),
-  /** 拓扑/业务视图同步间隔（秒）。默认 1200 秒（20 分钟） */
+  /** 拓扑/业务视图同步间隔（秒）。默认 300 秒（5 分钟） */
   SYNC_TOPOLOGY_INTERVAL: z
     .string()
-    .default('1200')
+    .default('300')
+    .transform((val) => parseInt(val, 10)),
+  /** 接口流量采集间隔（秒）。默认 600 秒（10 分钟） */
+  COLLECT_TRAFFIC_INTERVAL: z
+    .string()
+    .default('600')
     .transform((val) => parseInt(val, 10)),
   SYNC_DEVICES_INTERVAL: z
     .string()
