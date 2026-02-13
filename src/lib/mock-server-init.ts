@@ -4,17 +4,14 @@
  */
 
 import { startMockDataScheduler } from '@/services/mock/mock-scheduler';
+import { env } from '@/lib/env';
 
 /**
  * 初始化 Mock Server
  * 在 Next.js 服务器启动时调用
  */
 export function initMockServer() {
-  // 从环境变量读取更新间隔（分钟），默认 10 分钟
-  const updateInterval = parseInt(
-    process.env.MOCK_UPDATE_INTERVAL_MINUTES || '10',
-    10
-  );
+  const updateInterval = env.MOCK_UPDATE_INTERVAL_MINUTES;
 
   // 启动定时更新
   startMockDataScheduler(updateInterval);

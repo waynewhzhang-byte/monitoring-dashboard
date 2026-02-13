@@ -20,7 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             return res.status(200).json(cached);
         }
 
-        // 查询关键设备（有告警或状态异常的设备）
+        // 查询关键设备（有告警或状态异常的设备），同时包含最新指标（避免 N+1）
         const criticalDevices = await prisma.device.findMany({
             where: {
                 isMonitored: true,
@@ -36,48 +36,45 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 ]
             },
             take: 20,
-            orderBy: {
-                updatedAt: 'desc'
-            },
-            include: {
+            orderBy: { updatedAt: 'desc' },
+            select: {
+                id: true,
+                name: true,
+                displayName: true,
+                type: true,
+                ipAddress: true,
+                status: true,
                 _count: {
                     select: {
                         alarms: {
-                            where: {
-                                status: { in: ['ACTIVE', 'ACKNOWLEDGED'] }
-                            }
+                            where: { status: { in: ['ACTIVE', 'ACKNOWLEDGED'] } }
                         }
+                    }
+                },
+                metrics: {
+                    orderBy: { timestamp: 'desc' },
+                    take: 1,
+                    select: {
+                        cpuUsage: true,
+                        memoryUsage: true,
+                        diskUsage: true,
+                        responseTime: true,
+                        timestamp: true,
                     }
                 }
             }
         });
 
-        // 获取每个设备的最新指标
-        const devicesWithMetrics = await Promise.all(
-            criticalDevices.map(async (device) => {
-                const latestMetric = await prisma.deviceMetric.findFirst({
-                    where: { deviceId: device.id },
-                    orderBy: { timestamp: 'desc' }
-                });
-
-                return {
-                    id: device.id,
-                    name: device.name,
-                    displayName: device.displayName,
-                    type: device.type,
-                    ipAddress: device.ipAddress,
-                    status: device.status,
-                    alarmCount: device._count.alarms,
-                    metrics: latestMetric ? {
-                        cpuUsage: latestMetric.cpuUsage,
-                        memoryUsage: latestMetric.memoryUsage,
-                        diskUsage: latestMetric.diskUsage,
-                        responseTime: latestMetric.responseTime,
-                        timestamp: latestMetric.timestamp
-                    } : null
-                };
-            })
-        );
+        const devicesWithMetrics = criticalDevices.map((device) => ({
+            id: device.id,
+            name: device.name,
+            displayName: device.displayName,
+            type: device.type,
+            ipAddress: device.ipAddress,
+            status: device.status,
+            alarmCount: device._count.alarms,
+            metrics: device.metrics[0] ?? null,
+        }));
 
         const result = {
             devices: devicesWithMetrics,
