@@ -49,8 +49,8 @@ async function startScheduler() {
     let alarmsRunning = false;
     let trafficRunning = false;
 
-    // 数据清理：每24小时执行一次，清理过期历史数据
-    const CLEANUP_INTERVAL_MS = 24 * 60 * 60 * 1000;
+    // 数据清理：每7天执行一次，清理过期历史数据
+    const CLEANUP_INTERVAL_MS = 7 * 24 * 60 * 60 * 1000;
     let cleanupRunning = false;
     const cleanupTimer = setInterval(async () => {
         if (cleanupRunning) return;
