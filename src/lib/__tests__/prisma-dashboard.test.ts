@@ -1,4 +1,4 @@
-import { prisma } from '../prisma';
+import { prisma } from '@/lib/prisma';
 
 describe('Dashboard Model', () => {
   it('should be able to create and retrieve a dashboard', async () => {

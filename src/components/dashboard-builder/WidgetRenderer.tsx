@@ -1,26 +1,28 @@
 import React from 'react';
 import { WidgetConfig, WidgetType } from '@/types/dashboard-config';
 import { useWidgetData } from '@/hooks/useWidgetData';
+import { useDashboardStore } from '@/stores/useDashboardStore';
 
 // Widget组件映射
-import { StatCard } from '../widgets/StatCard';
-import { DeviceList } from '../domain/DeviceList';
-import { AlarmList } from '../domain/AlarmList';
-import { TopTrafficList } from '../traffic/TopTrafficList';
-import { MetricChart } from '../widgets/MetricChart';
-import { TopologyViewer } from '../domain/TopologyViewer';
+import { StatCard } from '@/components/widgets/StatCard';
+import { DeviceList } from '@/components/domain/DeviceList';
+import { AlarmList } from '@/components/domain/AlarmList';
+import { TopTrafficList } from '@/components/traffic/TopTrafficList';
+import { MetricChart } from '@/components/widgets/MetricChart';
+import { TopologyViewer } from '@/components/domain/TopologyViewer';
 
 interface WidgetRendererProps {
   widget: WidgetConfig;
+  realtimeKey?: number; // 实时更新触发器
 }
 
 /**
  * Widget渲染器
  * 根据Widget配置动态选择并渲染对应组件
  */
-export const WidgetRenderer: React.FC<WidgetRendererProps> = ({ widget }) => {
-  // 获取Widget数据
-  const { data, loading, error } = useWidgetData(widget.dataSource);
+export const WidgetRenderer: React.FC<WidgetRendererProps> = ({ widget, realtimeKey }) => {
+  // 获取Widget数据（传递 realtimeKey 触发重新获取）
+  const { data, loading, error } = useWidgetData(widget.dataSource, realtimeKey);
 
   // 渲染加载状态
   if (loading) {
@@ -91,6 +93,7 @@ export const WidgetRenderer: React.FC<WidgetRendererProps> = ({ widget }) => {
           )}
           <MetricChart
             data={data || []}
+            dataKey="value"
             color={widget.config?.color || '#06b6d4'}
             type={widget.type === WidgetType.AREA_CHART ? 'area' : 'line'}
           />
@@ -98,17 +101,23 @@ export const WidgetRenderer: React.FC<WidgetRendererProps> = ({ widget }) => {
       );
 
     case WidgetType.TOPOLOGY_MAP:
+      // Use global view selection if available, otherwise fall back to config
+      const globalView = useDashboardStore(s => s.currentBusinessView);
+      const activeView = globalView || widget.config?.bvName || '出口业务';
+
       return (
-        <div className="h-full bg-slate-800/50 rounded-lg border border-slate-700 overflow-hidden">
+        <div className="h-full bg-slate-900/60 rounded-lg border border-slate-700/80 overflow-hidden shadow-xl shadow-slate-950/50 backdrop-blur-sm">
           {widget.title && (
-            <div className="px-4 py-3 border-b border-slate-700">
+            <div className="px-4 py-3 border-b border-slate-700/80 flex justify-between items-center bg-slate-950/30">
               <h3 className="text-lg font-semibold text-white">{widget.title}</h3>
+              <span className="text-xs text-cyan-400/90 bg-slate-800/80 px-2 py-1 rounded border border-cyan-500/20 font-mono">
+                {activeView}
+              </span>
             </div>
           )}
           <div className="h-[calc(100%-60px)]">
             <TopologyViewer
-              initialNodes={data?.nodes || []}
-              initialEdges={data?.edges || []}
+              viewName={activeView}
             />
           </div>
         </div>

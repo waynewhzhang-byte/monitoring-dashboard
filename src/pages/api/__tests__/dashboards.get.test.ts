@@ -1,8 +1,8 @@
 import { createMocks } from 'node-mocks-http';
-import handler from '../dashboards/[id]';
-import { prisma } from '../../../lib/prisma';
+import handler from '@/pages/api/dashboards/[id]';
+import { prisma } from '@/lib/prisma';
 
-jest.mock('../../../lib/prisma', () => ({
+jest.mock('@/lib/prisma', () => ({
   prisma: {
     dashboard: {
       findUnique: jest.fn(),

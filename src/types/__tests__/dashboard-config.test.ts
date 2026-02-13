@@ -6,7 +6,7 @@ import {
   DashboardLayoutSchema, 
   DashboardThemeSchema, 
   DashboardConfigSchema 
-} from '../dashboard-config';
+} from '@/types/dashboard-config';
 
 describe('Dashboard Config Schemas', () => {
   describe('DataSourceConfigSchema', () => {

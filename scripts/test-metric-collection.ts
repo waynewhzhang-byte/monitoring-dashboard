@@ -1,8 +1,8 @@
 process.env.OPMANAGER_BASE_URL = "http://124.71.204.145:8060";
 process.env.OPMANAGER_API_KEY = "d1fb36f09d460e2319bb953b543e317a";
 
-import { metricCollector } from '../src/services/collector/metric';
-import { prisma } from '../src/lib/prisma';
+import { metricCollector } from '@/services/collector/metric';
+import { prisma } from '@/lib/prisma';
 
 async function main() {
     console.log('Testing metric collection...\n');

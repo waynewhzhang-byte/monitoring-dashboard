@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import Layout from '@/components/layout/Layout';
+import { MainLayout } from '@/components/layout/MainLayout';
 
 interface DashboardTemplate {
   id: string;
@@ -44,16 +44,16 @@ export default function DashboardSelector() {
 
   if (loading) {
     return (
-      <Layout title="大屏选择">
+      <MainLayout>
         <div className="flex items-center justify-center h-screen">
           <div className="text-slate-400 text-lg">加载中...</div>
         </div>
-      </Layout>
+      </MainLayout>
     );
   }
 
   return (
-    <Layout title="大屏选择">
+    <MainLayout>
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
         <div className="max-w-7xl mx-auto">
           {/* 页面标题 */}
@@ -89,7 +89,7 @@ export default function DashboardSelector() {
           </div>
         </div>
       </div>
-    </Layout>
+    </MainLayout>
   );
 }
 

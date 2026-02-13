@@ -7,10 +7,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ==================== 设备表 ====================
 model Device {
-  id            String    @id @default(cuid())
-  opmanagerId   String    @unique
+  id            String               @id @default(cuid())
+  opmanagerId   String               @unique
   name          String
   displayName   String?
   type          DeviceType
@@ -25,21 +24,204 @@ model Device {
   location      String?
   status        DeviceStatus
   availability  Float?
-  isMonitored   Boolean   @default(true)
-
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  isMonitored   Boolean              @default(true)
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
   lastSyncAt    DateTime?
-
-  // 关系
-  interfaces    Interface[]
-  metrics       DeviceMetric[]
+  group         String?
+  tags          String[]             @default([])
   alarms        Alarm[]
+  businessViews DeviceBusinessView[]
+  metrics       DeviceMetric[]
+  interfaces    Interface[]
   topologyNodes TopologyNode[]
 
   @@index([status])
   @@index([type])
+  @@index([group])
   @@index([isMonitored])
+  @@index([tags])
+}
+
+model DeviceMetric {
+  id           String   @id @default(cuid())
+  deviceId     String
+  cpuUsage     Float?
+  cpuLoad1m    Float?
+  cpuLoad5m    Float?
+  cpuLoad15m   Float?
+  memoryUsage  Float?
+  memoryTotal  BigInt?
+  memoryUsed   BigInt?
+  memoryFree   BigInt?
+  diskUsage    Float?
+  diskTotal    BigInt?
+  diskUsed     BigInt?
+  diskFree     BigInt?
+  responseTime Float?
+  packetLoss   Float?
+  uptime       BigInt?
+  temperature  Float?
+  timestamp    DateTime
+  device       Device   @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+
+  @@index([deviceId, timestamp(sort: Desc)])
+}
+
+model Interface {
+  id             String           @id @default(cuid())
+  deviceId       String
+  opmanagerId    String           @unique
+  name           String
+  displayName    String?
+  description    String?
+  type           String
+  macAddress     String?
+  speed          BigInt?
+  mtu            Int?
+  ipAddress      String?
+  subnetMask     String?
+  status         InterfaceStatus
+  adminStatus    InterfaceStatus?
+  ifIndex        Int?
+  isMonitored    Boolean          @default(true)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  lastSyncAt     DateTime?
+  tags           String[]         @default([])
+  device         Device           @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  topologyEdges  TopologyEdge[]
+  trafficMetrics TrafficMetric[]
+
+  @@index([deviceId])
+  @@index([status])
+  @@index([tags])
+}
+
+model TrafficMetric {
+  id             String    @id @default(cuid())
+  interfaceId    String
+  inOctets       BigInt    @default(0)
+  outOctets      BigInt    @default(0)
+  inPackets      BigInt    @default(0)
+  outPackets     BigInt    @default(0)
+  inBandwidth    BigInt?
+  outBandwidth   BigInt?
+  inUtilization  Float?
+  outUtilization Float?
+  inErrors       BigInt?
+  outErrors      BigInt?
+  inDiscards     BigInt?
+  outDiscards    BigInt?
+  timestamp      DateTime
+  interface      Interface @relation(fields: [interfaceId], references: [id], onDelete: Cascade)
+
+  @@index([interfaceId, timestamp(sort: Desc)])
+}
+
+model Alarm {
+  id              String        @id @default(cuid())
+  opmanagerId     String?
+  deviceId        String
+  severity        AlarmSeverity
+  category        String
+  title           String
+  message         String
+  status          AlarmStatus
+  acknowledgedBy  String?
+  acknowledgedAt  DateTime?
+  resolvedBy      String?
+  resolvedAt      DateTime?
+  clearedAt       DateTime?
+  occurredAt      DateTime
+  occurrenceCount Int           @default(1)
+  lastOccurrence  DateTime?
+  notes           String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  device          Device        @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+
+  @@index([deviceId])
+  @@index([severity])
+  @@index([status])
+  @@index([occurredAt(sort: Desc)])
+}
+
+model TopologyNode {
+  id          String         @id @default(cuid())
+  deviceId    String?
+  label       String
+  type        String
+  positionX   Float
+  positionY   Float
+  icon        String?
+  metadata    Json?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  viewName    String
+  sourceEdges TopologyEdge[] @relation("SourceNode")
+  targetEdges TopologyEdge[] @relation("TargetNode")
+  device      Device?        @relation(fields: [deviceId], references: [id])
+
+  @@index([viewName])
+}
+
+model TopologyEdge {
+  id          String       @id @default(cuid())
+  sourceId    String
+  targetId    String
+  label       String?
+  type        String?
+  interfaceId String?
+  metadata    Json?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  viewName    String
+  interface   Interface?   @relation(fields: [interfaceId], references: [id])
+  source      TopologyNode @relation("SourceNode", fields: [sourceId], references: [id], onDelete: Cascade)
+  target      TopologyNode @relation("TargetNode", fields: [targetId], references: [id], onDelete: Cascade)
+
+  @@index([viewName])
+}
+
+model Dashboard {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  layout      Json
+  widgets     Json
+  theme       Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model BusinessViewConfig {
+  id              String               @id @default(cuid())
+  name            String               @unique
+  displayName     String?
+  description     String?
+  isActive        Boolean              @default(true)
+  refreshInterval Int                  @default(300)
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+  cameraX         Float?
+  cameraY         Float?
+  cameraZoom      Float?
+  devices         DeviceBusinessView[]
+}
+
+model DeviceBusinessView {
+  id           String             @id @default(cuid())
+  deviceId     String
+  viewName     String
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+  device       Device             @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  businessView BusinessViewConfig @relation(fields: [viewName], references: [name], onDelete: Cascade)
+
+  @@unique([deviceId, viewName])
+  @@index([deviceId])
+  @@index([viewName])
 }
 
 enum DeviceType {
@@ -58,6 +240,7 @@ enum DeviceStatus {
   OFFLINE
   WARNING
   ERROR
+  UNMANAGED
 }
 
 enum OSType {
@@ -68,139 +251,12 @@ enum OSType {
   OTHER
 }
 
-// ==================== 设备指标表 ====================
-model DeviceMetric {
-  id              String    @id @default(cuid())
-  deviceId        String
-
-  cpuUsage        Float?
-  cpuLoad1m       Float?
-  cpuLoad5m       Float?
-  cpuLoad15m      Float?
-
-  memoryUsage     Float?
-  memoryTotal     BigInt?
-  memoryUsed      BigInt?
-  memoryFree      BigInt?
-
-  diskUsage       Float?
-  diskTotal       BigInt?
-  diskUsed        BigInt?
-  diskFree        BigInt?
-
-  responseTime    Float?
-  packetLoss      Float?
-  uptime          BigInt?
-  temperature     Float?
-
-  timestamp       DateTime
-
-  // 关系
-  device          Device    @relation(fields: [deviceId], references: [id], onDelete: Cascade)
-
-  @@index([deviceId, timestamp(sort: Desc)])
-}
-
-// ==================== 接口表 ====================
-model Interface {
-  id            String          @id @default(cuid())
-  deviceId      String
-  opmanagerId   String          @unique
-  name          String
-  displayName   String?
-  description   String?
-  type          String
-  macAddress    String?
-  speed         BigInt?
-  mtu           Int?
-  ipAddress     String?
-  subnetMask    String?
-  status        InterfaceStatus
-  adminStatus   InterfaceStatus?
-  ifIndex       Int?
-  isMonitored   Boolean         @default(true)
-
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  lastSyncAt    DateTime?
-
-  // 关系
-  device        Device          @relation(fields: [deviceId], references: [id], onDelete: Cascade)
-  trafficMetrics TrafficMetric[]
-  topologyEdges TopologyEdge[]
-
-  @@index([deviceId])
-  @@index([status])
-}
-
 enum InterfaceStatus {
   UP
   DOWN
   TESTING
   DORMANT
   UNKNOWN
-}
-
-// ==================== 流量指标表 ====================
-model TrafficMetric {
-  id              String    @id @default(cuid())
-  interfaceId     String
-
-  inOctets        BigInt    @default(0)
-  outOctets       BigInt    @default(0)
-  inPackets       BigInt    @default(0)
-  outPackets      BigInt    @default(0)
-
-  inBandwidth     BigInt?
-  outBandwidth    BigInt?
-  inUtilization   Float?
-  outUtilization  Float?
-
-  inErrors        BigInt?
-  outErrors       BigInt?
-  inDiscards      BigInt?
-  outDiscards     BigInt?
-
-  timestamp       DateTime
-
-  // 关系
-  interface       Interface @relation(fields: [interfaceId], references: [id], onDelete: Cascade)
-
-  @@index([interfaceId, timestamp(sort: Desc)])
-}
-
-// ==================== 告警表 ====================
-model Alarm {
-  id              String        @id @default(cuid())
-  opmanagerId     String?
-  deviceId        String
-  severity        AlarmSeverity
-  category        String
-  title           String
-  message         String
-  status          AlarmStatus
-
-  acknowledgedBy  String?
-  acknowledgedAt  DateTime?
-  resolvedBy      String?
-  resolvedAt      DateTime?
-  clearedAt       DateTime?
-
-  occurredAt      DateTime
-  occurrenceCount Int           @default(1)
-  lastOccurrence  DateTime?
-  notes           String?
-
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-
-  // 关系
-  device          Device        @relation(fields: [deviceId], references: [id], onDelete: Cascade)
-
-  @@index([deviceId])
-  @@index([severity])
-  @@index([status])
-  @@index([occurredAt(sort: Desc)])
 }
 
 enum AlarmSeverity {
@@ -216,56 +272,4 @@ enum AlarmStatus {
   ACKNOWLEDGED
   RESOLVED
   CLEARED
-}
-
-// ==================== 拓扑节点表 ====================
-model TopologyNode {
-  id          String    @id @default(cuid())
-  deviceId    String?
-  label       String
-  type        String
-  positionX   Float
-  positionY   Float
-  icon        String?
-  metadata    Json?
-
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  // 关系
-  device      Device?   @relation(fields: [deviceId], references: [id], onDelete: SetNull)
-  sourceEdges TopologyEdge[] @relation("SourceNode")
-  targetEdges TopologyEdge[] @relation("TargetNode")
-}
-
-// ==================== 拓扑连接表 ====================
-model TopologyEdge {
-  id          String    @id @default(cuid())
-  sourceId    String
-  targetId    String
-  label       String?
-  type        String?
-  interfaceId String?
-  metadata    Json?
-
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  // 关系
-  source      TopologyNode @relation("SourceNode", fields: [sourceId], references: [id], onDelete: Cascade)
-  target      TopologyNode @relation("TargetNode", fields: [targetId], references: [id], onDelete: Cascade)
-  interface   Interface?   @relation(fields: [interfaceId], references: [id], onDelete: SetNull)
-}
-
-// ==================== 大屏配置表 ====================
-model Dashboard {
-  id          String   @id @default(cuid())
-  name        String
-  description String?
-  layout      Json     // DashboardLayout
-  widgets     Json     // WidgetConfig[]
-  theme       Json?    // DashboardTheme
-
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
 }

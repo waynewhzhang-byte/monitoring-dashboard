@@ -5,8 +5,11 @@ import { useSocket } from './useSocket';
 /**
  * Widget数据钩子
  * 根据数据源配置自动获取和更新数据
+ *
+ * @param dataSource - 数据源配置
+ * @param realtimeKey - 实时更新触发器，当值变化时触发重新获取数据
  */
-export function useWidgetData(dataSource?: DataSourceConfig) {
+export function useWidgetData(dataSource?: DataSourceConfig, realtimeKey?: number) {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -26,6 +29,9 @@ export function useWidgetData(dataSource?: DataSourceConfig) {
 
         const url = new URL(dataSource.endpoint, window.location.origin);
 
+        // 添加时间戳防止缓存
+        url.searchParams.append('_t', Date.now().toString());
+
         // 添加查询参数
         if (dataSource.params) {
           Object.entries(dataSource.params).forEach(([key, value]) => {
@@ -44,8 +50,14 @@ export function useWidgetData(dataSource?: DataSourceConfig) {
         let result = await response.json();
 
         // 如果有数据转换函数，应用转换
-        if (dataSource.transform && typeof window[dataSource.transform as any] === 'function') {
-          result = (window[dataSource.transform as any] as Function)(result);
+        if (dataSource.transform) {
+          try {
+            // 使用 eval 或 Function 构造器来执行转换函数字符串
+            const transformFn = new Function('data', `return ${dataSource.transform}`);
+            result = transformFn(result);
+          } catch (error) {
+            console.error('Transform function error:', error);
+          }
         }
 
         setData(result);
@@ -69,7 +81,7 @@ export function useWidgetData(dataSource?: DataSourceConfig) {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [dataSource]);
+  }, [dataSource, realtimeKey]); // realtimeKey 改变时触发重新获取数据
 
   // WebSocket实时更新
   useEffect(() => {

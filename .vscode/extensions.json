@@ -1,0 +1,6 @@
+{
+    "recommendations": [
+        "anthropic.claude-code",
+        "google.gemini-cli-vscode-ide-companion"
+    ]
+}

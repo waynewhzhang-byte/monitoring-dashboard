@@ -1,5 +1,5 @@
-import { redis } from '../../lib/redis';
-import { prisma } from '../../lib/prisma';
+import { redis } from '@/lib/redis';
+import { prisma } from '@/lib/prisma';
 import { Alarm, AlarmSeverity, AlarmStatus } from '@prisma/client';
 
 /**

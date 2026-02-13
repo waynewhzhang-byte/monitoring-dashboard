@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { prisma } from '../../../lib/prisma';
-import { DashboardConfigSchema } from '../../../types/dashboard-config';
+import { prisma } from '@/lib/prisma';
+import { DashboardConfigSchema } from '@/types/dashboard-config';
 
 export default async function handler(
   req: NextApiRequest,

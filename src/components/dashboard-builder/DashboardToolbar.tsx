@@ -1,14 +1,15 @@
 import React from 'react';
 import { useDashboardStore } from '@/stores/useDashboardStore';
+import { ViewSelector } from '@/components/dashboard/ViewSelector';
 import { Settings, Edit2, Save, X, Trash2, Plus } from 'lucide-react';
 
 export const DashboardToolbar: React.FC = () => {
-  const { 
-    activeDashboard, 
-    isEditing, 
-    unsavedChanges, 
-    toggleEditing, 
-    setDashboard 
+  const {
+    activeDashboard,
+    isEditing,
+    unsavedChanges,
+    toggleEditing,
+    setDashboard
   } = useDashboardStore();
 
   const handleEdit = () => {
@@ -61,6 +62,11 @@ export const DashboardToolbar: React.FC = () => {
 
   return (
     <div className="flex items-center gap-2 bg-slate-800/80 backdrop-blur-sm p-1 rounded-lg border border-slate-700 shadow-xl">
+      <ViewSelector
+        currentView={useDashboardStore(s => s.currentBusinessView)}
+        onViewChange={useDashboardStore(s => s.setBusinessView)}
+      />
+      <div className="w-px h-4 bg-slate-700 mx-1" />
       {!isEditing ? (
         <button
           onClick={handleEdit}
@@ -74,16 +80,15 @@ export const DashboardToolbar: React.FC = () => {
           <button
             onClick={handleSave}
             disabled={!unsavedChanges}
-            className={`flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
-              unsavedChanges 
-                ? 'bg-cyan-600 text-white hover:bg-cyan-500' 
-                : 'bg-slate-700 text-slate-400 cursor-not-allowed'
-            }`}
+            className={`flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${unsavedChanges
+              ? 'bg-cyan-600 text-white hover:bg-cyan-500'
+              : 'bg-slate-700 text-slate-400 cursor-not-allowed'
+              }`}
           >
             <Save className="w-4 h-4" />
             <span>保存</span>
           </button>
-          
+
           <button
             onClick={handleCancel}
             className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-slate-200 hover:bg-slate-700 rounded-md transition-colors"

@@ -1,10 +1,14 @@
 import { create } from 'zustand';
-import { DashboardConfig, WidgetLayout } from '../types/dashboard-config';
+import { DashboardConfig, WidgetLayout } from '@/types/dashboard-config';
 
 interface DashboardState {
   activeDashboard: DashboardConfig | null;
   isEditing: boolean;
   unsavedChanges: boolean;
+
+  // Business View State
+  currentBusinessView: string;
+  setBusinessView: (view: string) => void;
 
   // Actions
   setDashboard: (dashboard: DashboardConfig) => void;
@@ -17,14 +21,17 @@ const initialState = {
   activeDashboard: null,
   isEditing: false,
   unsavedChanges: false,
+  currentBusinessView: '出口业务',
 };
 
 export const useDashboardStore = create<DashboardState>((set) => ({
   ...initialState,
 
-  setDashboard: (dashboard) => set({ 
+  setBusinessView: (view) => set({ currentBusinessView: view }),
+
+  setDashboard: (dashboard) => set({
     activeDashboard: dashboard,
-    unsavedChanges: false 
+    unsavedChanges: false
   }),
 
   toggleEditing: (isEditing) => set({ isEditing }),

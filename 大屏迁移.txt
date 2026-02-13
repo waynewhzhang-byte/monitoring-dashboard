@@ -1,0 +1,92 @@
+
+# 1. 导出数据库（推荐自定义格式）
+.\scripts\export-database.ps1
+
+# 2. 打包项目
+.\scripts\pack.ps1
+
+# 3. 上传到服务器（使用 scp 或其他工具）
+scp monitoring-dashboard-deploy.zip user@server:/opt/
+scp monitoring-dashboard-db-backup.dump user@server:/opt/
+
+# 1. 解压项目
+unzip monitoring-dashboard-deploy.zip -d /opt/monitoring-app
+cd /opt/monitoring-app
+
+# 2. 配置 .env 文件（设置生产环境的 DATABASE_URL）
+
+# 3. 导入数据库
+chmod +x scripts/import-database.sh
+./scripts/import-database.sh /opt/monitoring-dashboard-db-backup.dump
+
+# 4. 运行 Prisma 迁移
+npx prisma generate
+npx prisma migrate deploy
+
+
+### 银河麒麟端（导入）
+
+```bash
+# 1. 解压项目
+unzip monitoring-dashboard-deploy.zip -d /opt/monitoring-app
+cd /opt/monitoring-app
+
+# 2. 配置 .env 文件（设置生产环境的 DATABASE_URL）
+
+# 3. 导入数据库
+chmod +x scripts/import-database.sh
+./scripts/import-database.sh /opt/monitoring-dashboard-db-backup.dump
+
+# 4. 运行 Prisma 迁移
+npx prisma generate
+npx prisma migrate deploy
+
+# 启动主大屏 Web 服务
+pm2 start npm --name "monitoring-web" -- start
+
+# 启动后台数据采集服务 (非常重要：负责与 OpManager 同步数据)
+# 生产环境使用 node 运行编译后的 js 文件或通过 ts-node 运行
+pm2 start "npx ts-node -r tsconfig-paths/register --project tsconfig.node.json src/services/collector/start.ts" --name "monitoring-collector"
+```
+📋 下一步操作:
+   1. 将 monitoring-dashboard-deploy.zip 上传到银河麒麟服务器
+   2. 在服务器上解压: unzip monitoring-dashboard-deploy.zip -d /opt/monitoring-app
+   3. 进入目录: cd /opt/monitoring-app
+   4. 安装依赖: npm install
+   5. 生成 Prisma Client: npm run db:generate
+   6. 构建项目: npm run build
+   7. 启动服务: pm2 start ecosystem.config.js
+PS D:\monitoring-dashboard\scripts>npm run type-check
+
+powershell -ExecutionPolicy Bypass -File scripts/verify-and-pack.ps1
+
+powershell -ExecutionPolicy Bypass -File scripts/verify-and-pack.ps1
+
+powershell -ExecutionPolicy Bypass -File scripts/verify-and-pack.ps1
+
+   1. 将 monitoring-dashboard-deploy.zip 上传到银河麒麟服务器
+   2. 将 monitoring-dashboard-db-backup.dump 上传到银河麒麟服务器
+   3. 在服务器上解压应用包: unzip monitoring-dashboard-deploy.zip -d /opt/monitoring-app
+   4. 导入数据库: ./scripts/import-database.sh /opt/monitoring-dashboard-db-backup.dump
+   5. 安装依赖: npm install
+   6. 生成 Prisma Client: npm run db:generate
+   7. 应用迁移: npx prisma migrate deploy
+   8. 构建项目: npm run build
+   9. 启动服务: pm2 start ecosystem.config.js
+   
+修复所有组件中的相对路径导入 
+
+📋 下一步操作:
+   1. 将 monitoring-dashboard-deploy.zip 上传到银河麒麟服务器
+   2. 将 monitoring-dashboard-db-backup.dump 上传到银河麒麟服务器
+   3. 在服务器上解压应用包: unzip monitoring-dashboard-deploy.zip -d /opt/monitoring-app
+   4. 导入数据库: ./scripts/import-database.sh /opt/monitoring-dashboard-db-backup.dump
+   5. 安装依赖: npm install
+   6. 生成 Prisma Client: npm run db:generate
+   7. 应用迁移: npx prisma migrate deploy
+   8. 构建项目: npm run build
+   9. 启动服务: pm2 start ecosystem.config.js
+   
+   ./scripts/import-database.sh
+   
+   不要相对路径。要路径别名

@@ -77,3 +77,19 @@ export function average(numbers: number[]): number {
   if (numbers.length === 0) return 0
   return numbers.reduce((sum, num) => sum + num, 0) / numbers.length
 }
+
+/**
+ * 判断是否为网络设备
+ */
+export function isNetworkDevice(type: string): boolean {
+  const networkTypes = ['SWITCH', 'ROUTER', 'FIREWALL', 'LOAD_BALANCER']
+  return networkTypes.includes(type)
+}
+
+/**
+ * 判断是否为硬件服务器
+ */
+export function isHardwareServer(type: string): boolean {
+  const serverTypes = ['SERVER', 'STORAGE']
+  return serverTypes.includes(type)
+}

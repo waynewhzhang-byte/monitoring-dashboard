@@ -1,5 +1,5 @@
 import React from 'react';
-import { StatusIndicator } from '../widgets/StatusIndicator';
+import { StatusIndicator } from '@/components/widgets/StatusIndicator';
 
 interface OverviewStatsProps {
     data: {
@@ -20,12 +20,16 @@ interface OverviewStatsProps {
 }
 
 export const OverviewStats: React.FC<OverviewStatsProps> = ({ data }) => {
+    if (!data) return <div className="grid grid-cols-2 gap-3 animate-pulse">
+        {[1,2,3,4].map(i => <div key={i} className="h-20 bg-slate-800/50 rounded-lg border border-slate-700" />)}
+    </div>;
+
     return (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 gap-3 h-full">
             {/* 系统健康度 */}
-            <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6">
-                <div className="flex items-center justify-between mb-2">
-                    <span className="text-slate-400 text-sm">系统健康度</span>
+            <div className="bg-slate-900/40 backdrop-blur-md border border-slate-800 rounded-2xl p-3 flex flex-col justify-between">
+                <div className="flex items-center justify-between mb-1">
+                    <span className="text-slate-500 text-[8px] uppercase tracking-widest font-black">系统健康度</span>
                     <StatusIndicator
                         status={
                             data.devices.healthScore >= 90 ? 'ONLINE' :
@@ -34,58 +38,55 @@ export const OverviewStats: React.FC<OverviewStatsProps> = ({ data }) => {
                         }
                     />
                 </div>
-                <div className="text-3xl font-bold text-white mb-1">
-                    {data.devices.healthScore}
-                    <span className="text-lg text-slate-400 ml-1">分</span>
+                <div className="flex items-baseline gap-1">
+                    <div className={`text-2xl font-black font-mono ${
+                        data.devices.healthScore >= 90 ? 'text-emerald-400' :
+                        data.devices.healthScore >= 70 ? 'text-amber-400' : 'text-rose-400'
+                    }`}>
+                        {data.devices.healthScore}
+                    </div>
+                    <span className="text-[8px] text-slate-600 font-bold uppercase tracking-tighter">指数</span>
                 </div>
-                <div className="text-xs text-slate-500">
-                    可用性 {data.devices.availability}%
+                <div className="mt-2 h-1 w-full bg-slate-800 rounded-full overflow-hidden">
+                    <div 
+                        className={`h-full transition-all duration-1000 ${
+                            data.devices.healthScore >= 90 ? 'bg-emerald-500' :
+                            data.devices.healthScore >= 70 ? 'bg-amber-500' : 'bg-rose-500'
+                        }`}
+                        style={{ width: `${data.devices.healthScore}%` }}
+                    />
                 </div>
             </div>
 
-            {/* 总设备数 */}
-            <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6">
-                <div className="text-slate-400 text-sm mb-2">监控设备</div>
-                <div className="text-3xl font-bold text-white mb-1">
+            {/* 监控设备 */}
+            <div className="bg-slate-900/40 backdrop-blur-md border border-slate-800 rounded-2xl p-3 flex flex-col justify-between">
+                <div className="text-slate-500 text-[8px] uppercase tracking-widest font-black mb-1">活跃节点</div>
+                <div className="text-2xl font-black text-white font-mono">
                     {data.devices.total}
-                    <span className="text-lg text-slate-400 ml-1">台</span>
                 </div>
-                <div className="flex gap-4 text-xs mt-2">
-                    <span className="text-green-400">
-                        ✓ {data.devices.online}
-                    </span>
-                    <span className="text-yellow-400">
-                        ⚠ {data.devices.warning}
-                    </span>
-                    <span className="text-red-400">
-                        ✕ {data.devices.offline + data.devices.error}
-                    </span>
+                <div className="flex gap-2 text-[7px] mt-1 font-black">
+                    <span className="text-emerald-500 uppercase">{data.devices.online} 在线</span>
+                    <span className="text-rose-500 uppercase">{data.devices.offline + data.devices.error} 离线</span>
                 </div>
             </div>
 
-            {/* 在线设备 */}
-            <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6">
-                <div className="text-slate-400 text-sm mb-2">在线设备</div>
-                <div className="text-3xl font-bold text-green-400 mb-1">
-                    {data.devices.online}
+            {/* SLA 可用性 */}
+            <div className="bg-slate-900/40 backdrop-blur-md border border-slate-800 rounded-2xl p-3 flex flex-col justify-between">
+                <div className="text-slate-500 text-[8px] uppercase tracking-widest font-black mb-1">可用性 SLA</div>
+                <div className="text-2xl font-black text-cyan-400 font-mono italic">
+                    {Math.round(data.devices.availability)}%
                 </div>
-                <div className="text-xs text-slate-500">
-                    {data.devices.total > 0
-                        ? Math.round((data.devices.online / data.devices.total) * 100)
-                        : 0
-                    }% 在线率
-                </div>
+                <div className="text-[7px] text-slate-600 uppercase font-black">目标: 99.9%</div>
             </div>
 
-            {/* 活动告警 */}
-            <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6">
-                <div className="text-slate-400 text-sm mb-2">活动告警</div>
-                <div className="text-3xl font-bold text-orange-400 mb-1">
+            {/* 告警统计 */}
+            <div className="bg-slate-900/40 backdrop-blur-md border border-slate-800 rounded-2xl p-3 flex flex-col justify-between">
+                <div className="text-slate-500 text-[8px] uppercase tracking-widest font-black mb-1">威胁计数</div>
+                <div className="text-2xl font-black text-amber-400 font-mono">
                     {data.alarms.total}
                 </div>
-                <div className="text-xs text-red-400">
-                    {data.alarms.critical > 0 && `${data.alarms.critical} 严重告警`}
-                    {data.alarms.critical === 0 && '无严重告警'}
+                <div className="text-[7px] text-rose-500 font-black uppercase flex items-center gap-1">
+                   <div className="w-1 h-1 rounded-full bg-rose-500" /> {data.alarms.critical} 紧急
                 </div>
             </div>
         </div>

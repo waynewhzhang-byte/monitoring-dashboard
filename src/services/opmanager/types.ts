@@ -20,6 +20,7 @@ export interface OpManagerDevice {
     responseTime?: number;
     packetLoss?: number;
     availability?: number;
+    tags?: string | string[]; // Device tags (can be string or array)
 }
 
 export interface OpManagerAlarm {

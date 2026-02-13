@@ -161,46 +161,129 @@ monitoring-dashboard/
 
 ## 📚 文档目录
 
-本项目包含完整的技术文档：
+> **📌 不知道看哪个文档？** 查看 **[DOCUMENTATION-MAP.md](./DOCUMENTATION-MAP.md)** - 文档导航地图
 
-1. **[系统架构设计](architecture-design.md)**
+### 🚀 快速开始（必读）
+
+1. **[REQUIRED-VS-OPTIONAL.md](./REQUIRED-VS-OPTIONAL.md)** 🎯
+   - ⭐ **强烈推荐首先阅读**
+   - 必需配置 vs 可选配置对比
+   - 标签是否必需？Business View 是什么？
+   - 快速启动最小配置
+   - **避免在可选配置上浪费时间**
+
+2. **[QUICK-START-CHECKLIST.md](./QUICK-START-CHECKLIST.md)** ⚡
+   - 15-30 分钟快速上线指南
+   - 分步检查清单
+   - 时间线参考
+   - 故障快速排查
+
+3. **[COMPLETE-SETUP-GUIDE.md](./COMPLETE-SETUP-GUIDE.md)** 📘
+   - 从 OpManager 到大屏的完整数据流详解
+   - Admin 面板配置步骤（Business View 配置 ⭐）
+   - 详细故障排查指南
+   - **完整配置的权威参考**
+
+4. **[DATA-FLOW-DIAGRAM.md](./DATA-FLOW-DIAGRAM.md)** 🎨
+   - 可视化数据流架构图
+   - Business View 关联关系图
+   - 时序图和决策树
+   - **理解系统工作原理的最佳文档**
+
+5. **[TAGS-GUIDE.md](./TAGS-GUIDE.md)** 🏷️
+   - 标签使用详细指南
+   - 标签是否必需？（答案：不需要）
+   - 何时使用标签？如何添加标签？
+   - **可选功能，按需阅读**
+
+### 🔧 开发指南
+
+4. **[CLAUDE.md](./CLAUDE.md)**
+   - 项目开发规范
+   - 常用命令速查
+   - 核心架构说明
+   - **开发者必读**
+
+### 🛠️ 诊断和验证工具
+
+5. **[DASHBOARD-DISPLAY-DIAGNOSIS.md](./DASHBOARD-DISPLAY-DIAGNOSIS.md)** 🔍
+   - ⭐ **大屏无数据时首先查看**
+   - 完整诊断链路（环境→OpManager→数据库→BV→API→采集器）
+   - 7 大常见问题和解决方案
+   - 典型场景示例
+   - **命令**: `npm run diagnose:display`
+
+6. **[scripts/VERIFY-DATA-FLOW-README.md](./scripts/VERIFY-DATA-FLOW-README.md)**
+   - 完整数据流验证脚本说明
+   - 测试覆盖范围详解
+   - 性能指标说明
+
+7. **[scripts/QUICK-VERIFY-GUIDE.md](./scripts/QUICK-VERIFY-GUIDE.md)**
+   - 快速验证指南
+   - 3 步验证流程
+   - 典型使用场景
+
+8. **[DIAGNOSIS-GUIDE.md](./DIAGNOSIS-GUIDE.md)**
+   - 生产环境诊断指南
+   - API 调用验证
+   - 数据采集检查
+
+### 📖 技术文档（可选）
+
+7. **[系统架构设计](architecture-design.md)**
    - 整体架构图
    - 数据流设计
    - 核心模块说明
    - 性能优化策略
 
-2. **[数据库设计](prisma-schema.prisma)**
+8. **[数据库设计](prisma-schema.prisma)**
    - Prisma Schema 完整定义
    - 设备、接口、指标、告警、拓扑模型
    - 索引和关系设计
 
-3. **[项目结构与核心代码](project-structure.md)**
+9. **[项目结构与核心代码](project-structure.md)**
    - 详细目录结构
    - OpManager API 客户端实现
    - 数据采集服务代码
    - 定时任务调度器
 
-4. **[实时通信与前端组件](realtime-and-components.md)**
-   - Socket.io 服务器实现
-   - WebSocket Hook
-   - 设备监控面板组件
-   - 网络拓扑图组件
-   - 告警列表组件
-   - 环境变量配置
+10. **[实时通信与前端组件](realtime-and-components.md)**
+    - Socket.io 服务器实现
+    - WebSocket Hook
+    - 设备监控面板组件
+    - 网络拓扑图组件
+    - 告警列表组件
+    - 环境变量配置
 
-5. **[大屏页面与部署指南](deployment-guide.md)**
-   - 主大屏页面实现
-   - 状态总览组件
-   - Docker 部署配置
-   - Kubernetes 部署
-   - 性能优化建议
+11. **[大屏页面与部署指南](deployment-guide.md)**
+    - 主大屏页面实现
+    - 状态总览组件
+    - Docker 部署配置
+    - Kubernetes 部署
+    - 性能优化建议
 
-6. **[完整实施计划](implementation-plan.md)**
-   - 11周开发计划
-   - 阶段交付物
-   - 技术难点解决方案
-   - 测试策略
-   - 成功标准
+12. **[完整实施计划](implementation-plan.md)**
+    - 11周开发计划
+    - 阶段交付物
+    - 技术难点解决方案
+    - 测试策略
+    - 成功标准
+
+---
+
+**💡 推荐阅读顺序**：
+1. 了解配置 → **[REQUIRED-VS-OPTIONAL.md](./REQUIRED-VS-OPTIONAL.md)**（⭐ 必读第一篇）
+2. 首次部署 → **[QUICK-START-CHECKLIST.md](./QUICK-START-CHECKLIST.md)**
+3. 详细配置 → **[COMPLETE-SETUP-GUIDE.md](./COMPLETE-SETUP-GUIDE.md)**
+4. 理解架构 → **[DATA-FLOW-DIAGRAM.md](./DATA-FLOW-DIAGRAM.md)**
+5. 开发代码 → **[CLAUDE.md](./CLAUDE.md)**
+
+**❓ 常见疑问快速解答**：
+- **大屏没有数据怎么办？** → 🔍 运行 `npm run diagnose:display` 自动诊断（⭐ 推荐）
+- **不知道看哪个文档？** → [DOCUMENTATION-MAP.md](./DOCUMENTATION-MAP.md) 文档导航地图
+- **标签（Tags）必须配置吗？** → ❌ 不需要！查看 [TAGS-GUIDE.md](./TAGS-GUIDE.md)
+- **Business View 是什么？** → ✅ 必需配置！查看 [REQUIRED-VS-OPTIONAL.md](./REQUIRED-VS-OPTIONAL.md)
+- **如何验证数据流？** → 运行 `npm run verify:data-flow`
 
 ## 🔧 配置说明
 

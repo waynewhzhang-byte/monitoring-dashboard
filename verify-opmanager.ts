@@ -1,11 +1,13 @@
 
-// Set env vars before import
-process.env.OPMANAGER_BASE_URL = 'http://124.71.204.145:8060';
-process.env.OPMANAGER_API_KEY = 'd1fb36f09d460e2319bb953b543e317a';
-process.env.OPMANAGER_TIMEOUT = '10000';
-process.env.NODE_ENV = 'production'; // Force production to avoid mock
+// Set env vars before import (使用 Object.assign 避免只读属性错误)
+Object.assign(process.env, {
+  OPMANAGER_BASE_URL: 'http://124.71.204.145:8060',
+  OPMANAGER_API_KEY: 'd1fb36f09d460e2319bb953b543e317a',
+  OPMANAGER_TIMEOUT: '10000',
+  NODE_ENV: 'production' // Force production to avoid mock
+});
 
-import { opClient } from './src/services/opmanager/client';
+import { opClient } from '@/services/opmanager/client';
 
 async function main() {
     try {

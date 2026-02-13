@@ -11,17 +11,19 @@ import {
 
 interface MetricChartProps {
     data: any[];
-    dataKey: string;
+    dataKey?: string; // Optional, defaults to 'value'
     color?: string;
     height?: number;
     label?: string;
+    type?: 'line' | 'area'; // Chart type
 }
 
 export const MetricChart: React.FC<MetricChartProps> = ({
     data,
-    dataKey,
+    dataKey = 'value',
     color = '#3b82f6',
-    height = 300
+    height = 300,
+    type = 'area'
 }) => {
     return (
         <div className="w-full" style={{ height }}>
@@ -35,9 +37,12 @@ export const MetricChart: React.FC<MetricChartProps> = ({
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
                     <XAxis
-                        dataKey="timestamp"
+                        dataKey={data[0]?.time ? 'time' : 'timestamp'}
                         stroke="#64748b"
-                        tickFormatter={(str) => new Date(str).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        tickFormatter={(str) => {
+                            const date = new Date(str);
+                            return isNaN(date.getTime()) ? str : date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                        }}
                         style={{ fontSize: '12px' }}
                     />
                     <YAxis
@@ -49,13 +54,23 @@ export const MetricChart: React.FC<MetricChartProps> = ({
                         itemStyle={{ color: '#f1f5f9' }}
                         labelFormatter={(label) => new Date(label).toLocaleString()}
                     />
-                    <Area
-                        type="monotone"
-                        dataKey={dataKey}
-                        stroke={color}
-                        fillOpacity={1}
-                        fill={`url(#gradient-${dataKey})`}
-                    />
+                    {type === 'area' ? (
+                        <Area
+                            type="monotone"
+                            dataKey={dataKey}
+                            stroke={color}
+                            fillOpacity={1}
+                            fill={`url(#gradient-${dataKey})`}
+                        />
+                    ) : (
+                        <Area
+                            type="monotone"
+                            dataKey={dataKey}
+                            stroke={color}
+                            fillOpacity={0}
+                            fill="none"
+                        />
+                    )}
                 </AreaChart>
             </ResponsiveContainer>
         </div>

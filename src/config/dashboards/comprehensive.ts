@@ -64,6 +64,7 @@ export const comprehensiveDashboard: DashboardConfig = {
         rowSpan: 3
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/analytics/health',
         refreshInterval: 60000,
         transform: 'data => data.score'
@@ -87,6 +88,7 @@ export const comprehensiveDashboard: DashboardConfig = {
         rowSpan: 1.5
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/dashboard/overview',
         refreshInterval: 30000,
         transform: 'data => data.devices.online'
@@ -110,6 +112,7 @@ export const comprehensiveDashboard: DashboardConfig = {
         rowSpan: 1.5
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/dashboard/overview',
         refreshInterval: 30000,
         transform: 'data => data.devices.offline'
@@ -133,6 +136,7 @@ export const comprehensiveDashboard: DashboardConfig = {
         rowSpan: 1.5
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/alarms/stats',
         refreshInterval: 10000,
         transform: 'data => data.total',
@@ -158,6 +162,7 @@ export const comprehensiveDashboard: DashboardConfig = {
         rowSpan: 1.5
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/alarms/stats',
         refreshInterval: 10000,
         transform: 'data => data.bySeverity.critical || 0',
@@ -183,6 +188,7 @@ export const comprehensiveDashboard: DashboardConfig = {
         rowSpan: 1.5
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/analytics/system-metrics',
         refreshInterval: 30000,
         transform: 'data => data.avgCpu'
@@ -206,6 +212,7 @@ export const comprehensiveDashboard: DashboardConfig = {
         rowSpan: 1.5
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/analytics/system-metrics',
         refreshInterval: 30000,
         transform: 'data => data.avgMemory'
@@ -229,6 +236,7 @@ export const comprehensiveDashboard: DashboardConfig = {
         rowSpan: 5
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/topology',
         refreshInterval: 60000,
         realtime: true,
@@ -248,6 +256,7 @@ export const comprehensiveDashboard: DashboardConfig = {
         rowSpan: 5
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/alarms/trends?hours=24',
         refreshInterval: 60000
       },
@@ -268,6 +277,7 @@ export const comprehensiveDashboard: DashboardConfig = {
         rowSpan: 4
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/dashboard/critical-devices',
         refreshInterval: 30000,
         realtime: true,
@@ -290,6 +300,7 @@ export const comprehensiveDashboard: DashboardConfig = {
         rowSpan: 4
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/traffic/top?limit=10',
         refreshInterval: 30000
       },
@@ -311,6 +322,7 @@ export const comprehensiveDashboard: DashboardConfig = {
         rowSpan: 4
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/alarms?status=active&limit=10',
         refreshInterval: 10000,
         realtime: true,

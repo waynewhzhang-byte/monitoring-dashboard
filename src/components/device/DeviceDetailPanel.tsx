@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { StatusIndicator } from '../widgets/StatusIndicator';
-import { MetricChart } from '../widgets/MetricChart';
+import { StatusIndicator } from '@/components/widgets/StatusIndicator';
+import { MetricChart } from '@/components/widgets/MetricChart';
 import { X, Activity, HardDrive, Cpu, MemoryStick, Clock, MapPin } from 'lucide-react';
 
 interface DeviceDetailPanelProps {
@@ -193,6 +193,7 @@ export const DeviceDetailPanel: React.FC<DeviceDetailPanelProps> = ({ deviceId, 
                                             time: m.timestamp,
                                             value: m.cpuUsage
                                         }))}
+                                        dataKey="value"
                                         color="#06b6d4"
                                     />
                                 </div>
@@ -203,6 +204,7 @@ export const DeviceDetailPanel: React.FC<DeviceDetailPanelProps> = ({ deviceId, 
                                             time: m.timestamp,
                                             value: m.memoryUsage
                                         }))}
+                                        dataKey="value"
                                         color="#10b981"
                                     />
                                 </div>
@@ -213,6 +215,7 @@ export const DeviceDetailPanel: React.FC<DeviceDetailPanelProps> = ({ deviceId, 
                                             time: m.timestamp,
                                             value: m.diskUsage
                                         }))}
+                                        dataKey="value"
                                         color="#f59e0b"
                                     />
                                 </div>

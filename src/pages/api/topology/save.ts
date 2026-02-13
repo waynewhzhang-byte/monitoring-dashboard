@@ -10,7 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(405).json({ message: 'Method not allowed' });
     }
 
-    const { nodes, edges } = req.body;
+    const { nodes, edges, viewName = 'default' } = req.body;
 
     if (!Array.isArray(nodes) || !Array.isArray(edges)) {
         return res.status(400).json({ message: 'Invalid data format' });
@@ -19,15 +19,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
         // 使用事务确保数据一致性
         await prisma.$transaction(async (tx) => {
-            // 1. 删除所有现有的拓扑数据
-            await tx.topologyEdge.deleteMany({});
-            await tx.topologyNode.deleteMany({});
+            // 1. 删除特定视图的拓扑数据
+            await tx.topologyEdge.deleteMany({ where: { viewName } });
+            await tx.topologyNode.deleteMany({ where: { viewName } });
 
             // 2. 创建新的节点
             for (const node of nodes) {
                 await tx.topologyNode.create({
                     data: {
-                        id: node.id,
+                        id: `${viewName}-${node.id}`,
+                        viewName,
                         deviceId: node.data?.deviceId || null,
                         label: node.data?.label || node.id,
                         type: node.type || 'default',
@@ -43,9 +44,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             for (const edge of edges) {
                 await tx.topologyEdge.create({
                     data: {
-                        id: edge.id,
-                        sourceId: edge.source,
-                        targetId: edge.target,
+                        id: `${viewName}-${edge.id}`,
+                        viewName,
+                        sourceId: `${viewName}-${edge.source}`,
+                        targetId: `${viewName}-${edge.target}`,
                         label: edge.label || null,
                         type: edge.type || null,
                         interfaceId: edge.data?.interfaceId || null,
@@ -55,6 +57,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
         });
 
+        // Disable caching for write operations
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+        res.setHeader('Pragma', 'no-cache');
+        res.setHeader('Expires', '0');
         res.status(200).json({
             message: 'Topology saved successfully',
             nodeCount: nodes.length,

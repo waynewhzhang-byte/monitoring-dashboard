@@ -2,21 +2,23 @@ import React from 'react';
 import Link from 'next/link';
 import { Device, DeviceStatus } from '@prisma/client';
 import { Search } from 'lucide-react';
-import { StatusIndicator } from '../widgets/StatusIndicator';
+import { StatusIndicator } from '@/components/widgets/StatusIndicator';
 import { formatDistanceToNow } from 'date-fns';
 
 interface DeviceListProps {
     devices: Device[];
-    onFilterChange: (status: string) => void;
-    onSearchChange: (query: string) => void;
+    onFilterChange?: (status: string) => void;
+    onSearchChange?: (query: string) => void;
     isLoading?: boolean;
+    compact?: boolean;
 }
 
 export const DeviceList: React.FC<DeviceListProps> = ({
     devices,
-    onFilterChange,
-    onSearchChange,
-    isLoading
+    onFilterChange = () => {},
+    onSearchChange = () => {},
+    isLoading = false,
+    compact = false
 }) => {
     return (
         <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">

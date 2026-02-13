@@ -58,10 +58,10 @@ export default async function handler(
         return {
           id: d.id,
           name: d.name,
-          ip: d.ip,
+          ip: d.ipAddress,
           type: d.type,
           status: d.status,
-          [metric]: value,
+          [metric as string]: value,
           cpuUsage: latestMetric.cpuUsage,
           memoryUsage: latestMetric.memoryUsage,
           diskUsage: latestMetric.diskUsage,

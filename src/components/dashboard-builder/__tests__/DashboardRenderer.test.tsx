@@ -3,11 +3,12 @@
  */
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { DashboardRenderer } from '../DashboardRenderer';
-import { useDashboardStore } from '../../../stores/useDashboardStore';
-import { WidgetType } from '../../../types/dashboard-config';
+import { useDashboardStore } from '@/stores/useDashboardStore';
+import { WidgetType } from '@/types/dashboard-config';
 
-jest.mock('../../../stores/useDashboardStore');
+jest.mock('@/stores/useDashboardStore');
 jest.mock('../WidgetRenderer', () => ({
   WidgetRenderer: () => <div data-testid="widget-renderer" />
 }));
@@ -23,7 +24,7 @@ describe('DashboardRenderer', () => {
     name: 'Test Dashboard',
     layout: { columns: 24, rowHeight: 80, gap: 16 },
     widgets: [
-      { id: 'w1', type: WidgetType.STAT_CARD, layout: { col: 1, row: 1, colSpan: 6, rowSpan: 4 } }
+      { id: 'w1', type: WidgetType.STAT_CARD, visible: true, layout: { col: 1, row: 1, colSpan: 6, rowSpan: 4 } }
     ]
   };
 

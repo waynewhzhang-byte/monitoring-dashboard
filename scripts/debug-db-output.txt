@@ -1,0 +1,130 @@
+[dotenv@17.2.3] injecting env (3) from .env.local -- tip: 👥 sync secrets across teammates & machines: https://dotenvx.com/ops
+[dotenv@17.2.3] injecting env (0) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+================================================================================
+📊 数据库中 TEST2 的边数据
+================================================================================
+
+找到 7 条边
+
+边 1: TEST2-172.16.1.2 → TEST2-ad1.whrank.com
+────────────────────────────────────────────────────────────
+   ID: TEST2-172.16.1.2-ad1.whrank.com-172.16.1.2~ad1.whrank.com~1668143208998#639
+   Label: FastEthernet0/10-"xw-test"
+   InTraffic (from metadata): 0 bps
+   OutTraffic (from metadata): 0 bps
+   metadata.InTraffic exists: true
+   metadata.OutTraffic exists: true
+   metadata keys: x, y, nx, ny, desc, dest, name, type, label, InUtil, source, status, webNMS, L2scope, OutUtil, ifspeed, managed, mapName, objName, isDotted, linkType, menuName, viewType, InTraffic, className, groupName, lineStyle, ownerName, showArrow, showLabel, thickness, OperStatus, OutTraffic, labelColor, parentName, AdminStatus, OperStatImg, showTraffic, AdminStatImg, parentDispName, intfDisplayName
+
+边 2: TEST2-172.16.1.245 → TEST2-192.168.255.27
+────────────────────────────────────────────────────────────
+   ID: TEST2-172.16.1.245-192.168.255.27-172.16.1.245~192.168.255.27~1668143209021#863
+   Label: FastEthernet0/10-Fa0/10
+   InTraffic (from metadata): 0 bps
+   OutTraffic (from metadata): 0 bps
+   metadata.InTraffic exists: true
+   metadata.OutTraffic exists: true
+   metadata keys: x, y, nx, ny, desc, dest, name, type, label, InUtil, source, status, webNMS, L2scope, OutUtil, ifspeed, managed, mapName, objName, isDotted, linkType, menuName, viewType, InTraffic, className, groupName, lineStyle, ownerName, showArrow, showLabel, thickness, OperStatus, OutTraffic, labelColor, parentName, AdminStatus, OperStatImg, showTraffic, AdminStatImg, parentDispName, intfDisplayName
+
+边 3: TEST2-172.16.1.252 → TEST2-172.16.1.2
+────────────────────────────────────────────────────────────
+   ID: TEST2-172.16.1.252-172.16.1.2-172.16.1.252~172.16.1.2~1668143209042#672
+   Label: GigabitEthernet0/10-Gi0/10
+   InTraffic (from metadata): 10.794 Mbps
+   OutTraffic (from metadata): 333.332 Kbps
+   metadata.InTraffic exists: true
+   metadata.OutTraffic exists: true
+   metadata keys: x, y, nx, ny, desc, dest, name, type, label, InUtil, source, status, webNMS, L2scope, OutUtil, ifspeed, managed, mapName, objName, isDotted, linkType, menuName, viewType, InTraffic, className, groupName, lineStyle, ownerName, showArrow, showLabel, thickness, OperStatus, OutTraffic, labelColor, parentName, AdminStatus, OperStatImg, showTraffic, AdminStatImg, parentDispName, intfDisplayName
+
+边 4: TEST2-172.16.1.252 → TEST2-172.16.1.245
+────────────────────────────────────────────────────────────
+   ID: TEST2-172.16.1.252-172.16.1.245-172.16.1.252~172.16.1.245~1668143209067#988
+   Label: GigabitEthernet0/10-Gi0/10
+   InTraffic (from metadata): 10.794 Mbps
+   OutTraffic (from metadata): 333.332 Kbps
+   metadata.InTraffic exists: true
+   metadata.OutTraffic exists: true
+   metadata keys: x, y, nx, ny, desc, dest, name, type, label, InUtil, source, status, webNMS, L2scope, OutUtil, ifspeed, managed, mapName, objName, isDotted, linkType, menuName, viewType, InTraffic, className, groupName, lineStyle, ownerName, showArrow, showLabel, thickness, OperStatus, OutTraffic, labelColor, parentName, AdminStatus, OperStatImg, showTraffic, AdminStatImg, parentDispName, intfDisplayName
+
+边 5: TEST2-172.16.1.252 → TEST2-172.16.1.246
+────────────────────────────────────────────────────────────
+   ID: TEST2-172.16.1.252-172.16.1.246-172.16.1.252~172.16.1.246~1668143209096#846
+   Label: GigabitEthernet0/10-Gi0/10
+   InTraffic (from metadata): 10.794 Mbps
+   OutTraffic (from metadata): 333.332 Kbps
+   metadata.InTraffic exists: true
+   metadata.OutTraffic exists: true
+   metadata keys: x, y, nx, ny, desc, dest, name, type, label, InUtil, source, status, webNMS, L2scope, OutUtil, ifspeed, managed, mapName, objName, isDotted, linkType, menuName, viewType, InTraffic, className, groupName, lineStyle, ownerName, showArrow, showLabel, thickness, OperStatus, OutTraffic, labelColor, parentName, AdminStatus, OperStatImg, showTraffic, AdminStatImg, parentDispName, intfDisplayName
+
+边 6: TEST2-172.16.1.252 → TEST2-172.16.1.248
+────────────────────────────────────────────────────────────
+   ID: TEST2-172.16.1.252-172.16.1.248-172.16.1.252~172.16.1.248~1668143209119#315
+   Label: GigabitEthernet0/10-Gi0/10
+   InTraffic (from metadata): 10.794 Mbps
+   OutTraffic (from metadata): 333.332 Kbps
+   metadata.InTraffic exists: true
+   metadata.OutTraffic exists: true
+   metadata keys: x, y, nx, ny, desc, dest, name, type, label, InUtil, source, status, webNMS, L2scope, OutUtil, ifspeed, managed, mapName, objName, isDotted, linkType, menuName, viewType, InTraffic, className, groupName, lineStyle, ownerName, showArrow, showLabel, thickness, OperStatus, OutTraffic, labelColor, parentName, AdminStatus, OperStatImg, showTraffic, AdminStatImg, parentDispName, intfDisplayName
+
+边 7: TEST2-172.16.1.252 → TEST2-172.16.1.249
+────────────────────────────────────────────────────────────
+   ID: TEST2-172.16.1.252-172.16.1.249-172.16.1.252~172.16.1.249~1668143209155#134
+   Label: GigabitEthernet0/10-Gi0/10
+   InTraffic (from metadata): 10.794 Mbps
+   OutTraffic (from metadata): 333.332 Kbps
+   metadata.InTraffic exists: true
+   metadata.OutTraffic exists: true
+   metadata keys: x, y, nx, ny, desc, dest, name, type, label, InUtil, source, status, webNMS, L2scope, OutUtil, ifspeed, managed, mapName, objName, isDotted, linkType, menuName, viewType, InTraffic, className, groupName, lineStyle, ownerName, showArrow, showLabel, thickness, OperStatus, OutTraffic, labelColor, parentName, AdminStatus, OperStatImg, showTraffic, AdminStatImg, parentDispName, intfDisplayName
+
+================================================================================
+📊 唯一流量值统计:
+================================================================================
+InTraffic 唯一值: 0 bps, 10.794 Mbps
+OutTraffic 唯一值: 0 bps, 333.332 Kbps
+
+================================================================================
+📄 第一条边的完整 metadata:
+================================================================================
+{
+  "x": "-1",
+  "y": "-1",
+  "nx": "-1",
+  "ny": "-1",
+  "desc": "FastEthernet0/10",
+  "dest": "ad1.whrank.com",
+  "name": "172.16.1.2~ad1.whrank.com~1668143208998#639",
+  "type": "Interface",
+  "label": "",
+  "InUtil": "0.0",
+  "source": "172.16.1.2",
+  "status": "3",
+  "webNMS": "",
+  "L2scope": "undefined",
+  "OutUtil": "0.0",
+  "ifspeed": "10 Mbps",
+  "managed": "true",
+  "mapName": "TEST2_bview.netmap",
+  "objName": "IF-172.16.1.2-675",
+  "isDotted": "false",
+  "linkType": "1",
+  "menuName": "null",
+  "viewType": "traffic",
+  "InTraffic": "0 bps",
+  "className": "com.adventnet.nms.mapdb.MapLink",
+  "groupName": "null",
+  "lineStyle": "1",
+  "ownerName": "NULL",
+  "showArrow": "false",
+  "showLabel": "true",
+  "thickness": "3",
+  "OperStatus": "Down",
+  "OutTraffic": "0 bps",
+  "labelColor": "#2c6cd2",
+  "parentName": "172.16.1.2",
+  "AdminStatus": "Up",
+  "OperStatImg": "/webclient/devices/images/status2.gif",
+  "showTraffic": "no",
+  "AdminStatImg": "/webclient/devices/images/status5.gif",
+  "parentDispName": "RankingSW02",
+  "intfDisplayName": "FastEthernet0/10-\"xw-test\""
+}

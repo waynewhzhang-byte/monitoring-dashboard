@@ -64,6 +64,7 @@ export const networkMonitorDashboard: DashboardConfig = {
         rowSpan: 2
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/dashboard/overview',
         refreshInterval: 30000,
         transform: 'data => data.devices.online'
@@ -87,6 +88,7 @@ export const networkMonitorDashboard: DashboardConfig = {
         rowSpan: 2
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/dashboard/overview',
         refreshInterval: 30000,
         transform: 'data => data.devices.offline'
@@ -110,6 +112,7 @@ export const networkMonitorDashboard: DashboardConfig = {
         rowSpan: 2
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/dashboard/overview',
         refreshInterval: 10000,
         transform: 'data => data.alarms.active',
@@ -135,6 +138,7 @@ export const networkMonitorDashboard: DashboardConfig = {
         rowSpan: 2
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/analytics/health',
         refreshInterval: 60000
       },
@@ -157,6 +161,7 @@ export const networkMonitorDashboard: DashboardConfig = {
         rowSpan: 6
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/topology',
         refreshInterval: 60000,
         realtime: true,
@@ -176,6 +181,7 @@ export const networkMonitorDashboard: DashboardConfig = {
         rowSpan: 6
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/traffic/top?limit=10',
         refreshInterval: 30000
       },
@@ -197,6 +203,7 @@ export const networkMonitorDashboard: DashboardConfig = {
         rowSpan: 4
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/dashboard/critical-devices',
         refreshInterval: 30000,
         realtime: true,
@@ -219,6 +226,7 @@ export const networkMonitorDashboard: DashboardConfig = {
         rowSpan: 4
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/alarms?status=active&limit=10',
         refreshInterval: 10000,
         realtime: true,

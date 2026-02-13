@@ -64,6 +64,7 @@ export const alarmCenterDashboard: DashboardConfig = {
         rowSpan: 2
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/alarms/stats',
         refreshInterval: 10000,
         transform: 'data => data.total',
@@ -89,6 +90,7 @@ export const alarmCenterDashboard: DashboardConfig = {
         rowSpan: 2
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/alarms/stats',
         refreshInterval: 10000,
         transform: 'data => data.bySeverity.critical || 0',
@@ -114,6 +116,7 @@ export const alarmCenterDashboard: DashboardConfig = {
         rowSpan: 2
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/alarms/trends?hours=24',
         refreshInterval: 60000,
         transform: 'data => data.reduce((sum, item) => sum + item.count, 0)'
@@ -137,6 +140,7 @@ export const alarmCenterDashboard: DashboardConfig = {
         rowSpan: 2
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/alarms/stats',
         refreshInterval: 300000,
         transform: 'data => Math.round((data.avgResolutionTime || 0) / 60)'
@@ -160,6 +164,7 @@ export const alarmCenterDashboard: DashboardConfig = {
         rowSpan: 4
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/alarms/trends?hours=24',
         refreshInterval: 60000
       },
@@ -180,6 +185,7 @@ export const alarmCenterDashboard: DashboardConfig = {
         rowSpan: 4
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/alarms/stats',
         refreshInterval: 60000,
         transform: `data => Object.entries(data.bySeverity).map(([name, value]) => ({ name, value }))`
@@ -205,6 +211,7 @@ export const alarmCenterDashboard: DashboardConfig = {
         rowSpan: 5
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/alarms?status=active&severity=critical&limit=20',
         refreshInterval: 10000,
         realtime: true,
@@ -228,6 +235,7 @@ export const alarmCenterDashboard: DashboardConfig = {
         rowSpan: 5
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/alarms?status=active&severity=warning&limit=20',
         refreshInterval: 10000,
         realtime: true,
@@ -251,6 +259,7 @@ export const alarmCenterDashboard: DashboardConfig = {
         rowSpan: 3
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/alarms/stats',
         refreshInterval: 60000,
         transform: 'data => data.topDevices || []'

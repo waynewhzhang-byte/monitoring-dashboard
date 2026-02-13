@@ -1,17 +1,23 @@
 import React from 'react';
 import { Alarm } from '@prisma/client';
-import { StatusIndicator } from '../widgets/StatusIndicator';
+import { StatusIndicator } from '@/components/widgets/StatusIndicator';
 import { CheckCircle2 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { zhCN } from 'date-fns/locale';
 
 interface AlarmListProps {
     alarms: (Alarm & { device?: { name: string } })[];
-    onAcknowledge: (id: string) => void;
+    onAcknowledge?: (id: string) => void;
     isLoading?: boolean;
+    compact?: boolean;
 }
 
-export const AlarmList: React.FC<AlarmListProps> = ({ alarms, onAcknowledge, isLoading }) => {
+export const AlarmList: React.FC<AlarmListProps> = ({ 
+    alarms, 
+    onAcknowledge = () => {}, 
+    isLoading = false,
+    compact = false 
+}) => {
     return (
         <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
             <div className="p-4 border-b border-slate-800 bg-slate-950/30">

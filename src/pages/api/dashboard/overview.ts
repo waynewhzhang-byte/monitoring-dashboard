@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '@/lib/prisma';
-import { DeviceStatus } from '@prisma/client';
+import { DeviceStatus, DeviceType } from '@prisma/client';
 
 /**
  * 获取大屏总览数据
@@ -19,6 +19,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             offlineDevices,
             warningDevices,
             errorDevices,
+            networkDevices,
+            serverDevices,
+            otherDevices,
             activeAlarms,
             criticalAlarms,
             recentAlarms
@@ -57,6 +60,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 where: {
                     isMonitored: true,
                     status: DeviceStatus.ERROR
+                }
+            }),
+
+            // 网络设备数（用于大屏 donut 分类）
+            prisma.device.count({
+                where: {
+                    isMonitored: true,
+                    type: { in: [DeviceType.SWITCH, DeviceType.ROUTER, DeviceType.FIREWALL, DeviceType.LOAD_BALANCER] }
+                }
+            }),
+
+            // 服务器设备数（用于大屏 donut 分类）
+            prisma.device.count({
+                where: {
+                    isMonitored: true,
+                    type: { in: [DeviceType.SERVER, DeviceType.STORAGE] }
+                }
+            }),
+
+            // 其他设备数（用于大屏 donut 分类）
+            prisma.device.count({
+                where: {
+                    isMonitored: true,
+                    type: { in: [DeviceType.OTHER, DeviceType.PRINTER] }
                 }
             }),
 
@@ -112,15 +139,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             ? Math.round(((onlineDevices * 100 + warningDevices * 50) / totalDevices))
             : 100;
 
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+        res.setHeader('Pragma', 'no-cache');
+        res.setHeader('Expires', '0');
+
         res.status(200).json({
             devices: {
+                // 兼容：部分前端用 totalAll（旧 stats/business-view），部分用 total（overview）
                 total: totalDevices,
+                totalAll: totalDevices,
                 online: onlineDevices,
                 offline: offlineDevices,
                 warning: warningDevices,
                 error: errorDevices,
                 availability,
-                healthScore
+                healthScore,
+                byType: {
+                    network: networkDevices,
+                    server: serverDevices,
+                    other: otherDevices
+                }
             },
             alarms: {
                 total: activeAlarms,

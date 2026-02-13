@@ -1,13 +1,13 @@
-import React, { useMemo } from 'react';
-import { Responsive, WidthProvider } from 'react-grid-layout';
+import React, { useMemo, useEffect } from 'react';
+import { Responsive } from 'react-grid-layout';
 import { DashboardConfig, WidgetConfig } from '@/types/dashboard-config';
 import { WidgetRenderer } from './WidgetRenderer';
 import { useDashboardStore } from '@/stores/useDashboardStore';
+import { useRealtimeUpdates } from '@/hooks/useRealtimeUpdates';
+import { RealtimeStatusIndicator } from '@/components/widgets/RealtimeStatusIndicator';
 
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
-
-const ResponsiveGridLayout = WidthProvider(Responsive);
 
 interface DashboardRendererProps {
   config?: DashboardConfig;
@@ -26,10 +26,22 @@ export const DashboardRenderer: React.FC<DashboardRendererProps> = ({
 }) => {
   // 从 Store 获取状态和操作
   const { activeDashboard, isEditing, updateWidgetLayout } = useDashboardStore();
-  
+
   // 优先使用 prop，否则使用 store
   const config = propConfig || activeDashboard;
   const editable = propEditable !== undefined ? propEditable : isEditing;
+
+  // 🔥 启用实时数据更新
+  const { isConnected, lastUpdate } = useRealtimeUpdates();
+
+  // 显示实时更新状态指示器
+  useEffect(() => {
+    if (isConnected) {
+      console.log('🔌 Dashboard realtime updates: ACTIVE');
+    } else {
+      console.log('❌ Dashboard realtime updates: DISCONNECTED');
+    }
+  }, [isConnected]);
 
   if (!config) {
     return (
@@ -55,10 +67,10 @@ export const DashboardRenderer: React.FC<DashboardRendererProps> = ({
   }, [widgets]);
 
   // 处理布局改变
-  const handleLayoutChange = (currentLayout: any[]) => {
+  const handleLayoutChange = (currentLayout: any, allLayouts?: any) => {
     if (!editable) return;
     
-    currentLayout.forEach(item => {
+    (currentLayout || []).forEach((item: any) => {
       const widget = widgets.find(w => w.id === item.i);
       if (widget) {
         const newLayout = {
@@ -94,21 +106,24 @@ export const DashboardRenderer: React.FC<DashboardRendererProps> = ({
 
   // 渲染编辑模式下的布局
   if (editable) {
+    const responsiveProps = {
+      className: "layout",
+      layouts: { lg: rglLayout },
+      breakpoints: { lg: 1200, md: 996, sm: 768, xs: 480, xss: 0 },
+      cols: { lg: layout.columns || 24, md: 20, sm: 12, xs: 8, xss: 4 },
+      rowHeight: layout.rowHeight || 80,
+      margin: [layout.gap || 16, layout.gap || 16] as [number, number],
+      onLayoutChange: handleLayoutChange,
+      draggableHandle: ".widget-drag-handle",
+    };
+    
     return (
       <div
         className={`dashboard-container ${theme?.customClass || ''} w-full h-full`}
         style={themeStyle}
       >
-        <ResponsiveGridLayout
-          className="layout"
-          layouts={{ lg: rglLayout }}
-          breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xss: 0 }}
-          cols={{ lg: layout.columns || 24, md: 20, sm: 12, xs: 8, xss: 4 }}
-          rowHeight={layout.rowHeight || 80}
-          margin={[layout.gap || 16, layout.gap || 16]}
-          onLayoutChange={handleLayoutChange}
-          draggableHandle=".widget-drag-handle"
-        >
+        {/* @ts-ignore - Responsive component props may not match exactly */}
+        <Responsive {...responsiveProps}>
           {widgets.map(widget => (
             <div
               key={widget.id}
@@ -129,7 +144,7 @@ export const DashboardRenderer: React.FC<DashboardRendererProps> = ({
               </div>
             </div>
           ))}
-        </ResponsiveGridLayout>
+        </Responsive>
       </div>
     );
   }
@@ -147,12 +162,19 @@ export const DashboardRenderer: React.FC<DashboardRendererProps> = ({
 
   return (
     <div
-      className={`dashboard-container ${theme?.customClass || ''}`}
+      className={`dashboard-container ${theme?.customClass || ''} relative`}
       style={{ ...themeStyle, ...gridStyle }}
     >
+      {/* 实时状态指示器 */}
+      <div className="absolute top-4 right-4 z-50 pointer-events-none">
+        <div className="px-3 py-1.5 bg-slate-900/80 backdrop-blur-sm rounded-lg border border-slate-700 shadow-lg">
+          <RealtimeStatusIndicator isConnected={isConnected} />
+        </div>
+      </div>
+
       {widgets.map(widget => (
         <div
-          key={widget.id}
+          key={`${widget.id}-${lastUpdate}`} // 使用 lastUpdate 作为 key 的一部分，触发重新渲染
           style={{
             gridColumn: `${widget.layout.col} / span ${widget.layout.colSpan}`,
             gridRow: `${widget.layout.row} / span ${widget.layout.rowSpan}`,
@@ -162,7 +184,7 @@ export const DashboardRenderer: React.FC<DashboardRendererProps> = ({
           }}
           className={`dashboard-widget ${widget.style?.className || ''}`}
         >
-          <WidgetRenderer widget={widget} />
+          <WidgetRenderer widget={widget} realtimeKey={lastUpdate} />
         </div>
       ))}
     </div>

@@ -20,6 +20,7 @@ export const DEVICE_STATUS = {
   OFFLINE: 'OFFLINE',
   WARNING: 'WARNING',
   ERROR: 'ERROR',
+  UNMANAGED: 'UNMANAGED',
 } as const
 
 /**
@@ -103,14 +104,23 @@ export const STATUS_COLOR_CONFIG = {
     textColor: 'text-red-500',
     label: '错误',
   },
+  UNMANAGED: {
+    color: 'bg-slate-400',
+    textColor: 'text-slate-400',
+    label: '未监控',
+  },
 } as const
 
 /**
- * 数据采集间隔（秒）
+ * 数据采集间隔（秒），均可通过环境变量后续调整
  */
 export const COLLECTION_INTERVALS = {
-  METRICS: parseInt(process.env.COLLECT_METRICS_INTERVAL || '60'),
+  /** 设备采集实时性能，默认 300 秒（5 分钟） */
+  METRICS: parseInt(process.env.COLLECT_METRICS_INTERVAL || '300'),
+  /** 接口采集间隔，默认 300 秒（5 分钟） */
+  INTERFACE: parseInt(process.env.COLLECT_INTERFACE_INTERVAL || '300'),
   ALARMS: parseInt(process.env.COLLECT_ALARMS_INTERVAL || '30'),
+  TOPOLOGY: parseInt(process.env.SYNC_TOPOLOGY_INTERVAL || '300'),
   DEVICES: parseInt(process.env.SYNC_DEVICES_INTERVAL || '600'),
 } as const
 

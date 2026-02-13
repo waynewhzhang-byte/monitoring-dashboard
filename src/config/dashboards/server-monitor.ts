@@ -64,6 +64,7 @@ export const serverMonitorDashboard: DashboardConfig = {
         rowSpan: 2
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/devices?type=server',
         refreshInterval: 60000,
         transform: 'data => data.length'
@@ -87,6 +88,7 @@ export const serverMonitorDashboard: DashboardConfig = {
         rowSpan: 2
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/devices?type=server&status=online',
         refreshInterval: 30000,
         transform: 'data => data.length',
@@ -112,6 +114,7 @@ export const serverMonitorDashboard: DashboardConfig = {
         rowSpan: 2
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/analytics/system-metrics',
         refreshInterval: 30000,
         transform: 'data => data.avgCpu'
@@ -135,6 +138,7 @@ export const serverMonitorDashboard: DashboardConfig = {
         rowSpan: 2
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/analytics/system-metrics',
         refreshInterval: 30000,
         transform: 'data => data.avgMemory'
@@ -158,6 +162,7 @@ export const serverMonitorDashboard: DashboardConfig = {
         rowSpan: 6
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/devices?type=server',
         refreshInterval: 30000,
         realtime: true,
@@ -181,6 +186,7 @@ export const serverMonitorDashboard: DashboardConfig = {
         rowSpan: 3
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/analytics/top-devices?metric=cpu&limit=5',
         refreshInterval: 30000
       },
@@ -202,6 +208,7 @@ export const serverMonitorDashboard: DashboardConfig = {
         rowSpan: 3
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/analytics/top-devices?metric=memory&limit=5',
         refreshInterval: 30000
       },
@@ -223,6 +230,7 @@ export const serverMonitorDashboard: DashboardConfig = {
         rowSpan: 4
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/analytics/system-trend?metric=cpu&hours=24',
         refreshInterval: 60000
       },
@@ -243,6 +251,7 @@ export const serverMonitorDashboard: DashboardConfig = {
         rowSpan: 4
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/analytics/system-trend?metric=memory&hours=24',
         refreshInterval: 60000
       },
@@ -263,6 +272,7 @@ export const serverMonitorDashboard: DashboardConfig = {
         rowSpan: 2
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/analytics/system-metrics',
         refreshInterval: 300000,
         transform: 'data => data.avgDisk'
@@ -286,6 +296,7 @@ export const serverMonitorDashboard: DashboardConfig = {
         rowSpan: 2
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/analytics/health',
         refreshInterval: 60000,
         transform: 'data => data.score'
@@ -309,6 +320,7 @@ export const serverMonitorDashboard: DashboardConfig = {
         rowSpan: 2
       },
       dataSource: {
+        method: 'GET',
         endpoint: '/api/alarms?deviceType=server&status=active&limit=5',
         refreshInterval: 10000,
         realtime: true,

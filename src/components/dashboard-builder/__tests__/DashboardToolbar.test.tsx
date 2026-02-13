@@ -3,10 +3,11 @@
  */
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { DashboardToolbar } from '../DashboardToolbar';
-import { useDashboardStore } from '../../../stores/useDashboardStore';
+import { useDashboardStore } from '@/stores/useDashboardStore';
 
-jest.mock('../../../stores/useDashboardStore');
+jest.mock('@/stores/useDashboardStore');
 
 describe('DashboardToolbar', () => {
   const mockStore = {

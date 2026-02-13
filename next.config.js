@@ -11,6 +11,27 @@ const nextConfig = {
         'socket.io': 'socket.io',
       });
     }
+    
+    // Exclude system folders from file watching (Windows)
+    if (!isServer) {
+      if (!config.watchOptions) {
+        config.watchOptions = {};
+      }
+      
+      const existingIgnored = Array.isArray(config.watchOptions.ignored) 
+        ? config.watchOptions.ignored 
+        : [];
+      
+      config.watchOptions.ignored = [
+        ...existingIgnored,
+        '**/node_modules/**',
+        '**/.git/**',
+        '**/System Volume Information/**',
+        '**/$RECYCLE.BIN/**',
+        '**/Thumbs.db',
+      ];
+    }
+    
     return config;
   },
 }

@@ -45,8 +45,8 @@ export const DataSourceConfigSchema = z.object({
   // API端点
   endpoint: z.string(),
 
-  // 请求方法
-  method: z.enum(['GET', 'POST']).optional().default('GET'),
+  // 请求方法（可选，默认为 GET）
+  method: z.enum(['GET', 'POST']).default('GET').optional(),
 
   // 请求参数
   params: z.record(z.any()).optional(),

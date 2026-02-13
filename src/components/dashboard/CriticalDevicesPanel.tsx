@@ -1,5 +1,5 @@
 import React from 'react';
-import { StatusIndicator } from '../widgets/StatusIndicator';
+import { StatusIndicator } from '@/components/widgets/StatusIndicator';
 import { DeviceStatus } from '@prisma/client';
 
 interface Device {

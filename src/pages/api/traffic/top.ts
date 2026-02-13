@@ -50,7 +50,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 }
 
                 // 计算总带宽（入+出）
-                const totalBandwidth = (latestMetric.inBandwidth || 0) + (latestMetric.outBandwidth || 0);
+                const inBw = Number(latestMetric.inBandwidth || 0);
+                const outBw = Number(latestMetric.outBandwidth || 0);
+                const totalBandwidth = inBw + outBw;
                 const totalUtilization = (latestMetric.inUtilization || 0) + (latestMetric.outUtilization || 0);
 
                 return {

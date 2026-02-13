@@ -1,13 +1,8 @@
-import { publish } from '../../lib/redis';
+import { publish } from '@/lib/redis';
+import { BroadcastEvent } from '@/types/broadcast';
 
-// Events match what Socket.io server expects or what client listens to
-export enum BroadcastEvent {
-    METRICS_UPDATE = 'metrics:update',
-    ALARM_NEW = 'alarm:new',
-    ALARM_UPDATE = 'alarm:update',
-    ALARM_RESOLVED = 'alarm:resolved',
-    DEVICE_UPDATE = 'device:updated'
-}
+// Re-export for backward compatibility
+export { BroadcastEvent };
 
 export class Broadcaster {
     /**

@@ -1,0 +1,155 @@
+[dotenv@17.2.3] injecting env (20) from .env.local -- tip: ⚙️  enable debug logging with { debug: true }
+[dotenv@17.2.3] injecting env (1) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+================================================================================
+📡 调用 OpManager getBVDetails API
+================================================================================
+   Base URL: https://ithelp.whrank.com:44443
+   API Key: c42c8409...
+   Business View: TEST2
+
+📡 GET https://ithelp.whrank.com:44443/api/json/businessview/getBVDetails?apiKey=xxxx&bvName=TEST2
+
+✅ API 调用成功！
+
+📊 基本信息:
+   设备数 (deviceProperties): 8
+   边数 (linkProperties): 7
+
+================================================================================
+📋 边流量数据分析:
+================================================================================
+
+边 1: 172.16.1.2 → ad1.whrank.com
+────────────────────────────────────────────────────────────
+   InTraffic: "0 bps"
+   OutTraffic: "0 bps"
+   name: 172.16.1.2~ad1.whrank.com~1668143208998#639
+   objName: IF-172.16.1.2-675
+   status: 3
+   ifName: N/A
+   intfDisplayName: FastEthernet0/10-"xw-test"
+
+边 2: 172.16.1.245 → 192.168.255.27
+────────────────────────────────────────────────────────────
+   InTraffic: "0 bps"
+   OutTraffic: "0 bps"
+   name: 172.16.1.245~192.168.255.27~1668143209021#863
+   objName: IF-172.16.1.245-644
+   status: 3
+   ifName: N/A
+   intfDisplayName: FastEthernet0/10-Fa0/10
+
+边 3: 172.16.1.252 → 172.16.1.2
+────────────────────────────────────────────────────────────
+   InTraffic: "10.794 Mbps"
+   OutTraffic: "333.332 Kbps"
+   name: 172.16.1.252~172.16.1.2~1668143209042#672
+   objName: IF-172.16.1.252-795
+   status: 5
+   ifName: N/A
+   intfDisplayName: GigabitEthernet0/10-Gi0/10
+
+边 4: 172.16.1.252 → 172.16.1.245
+────────────────────────────────────────────────────────────
+   InTraffic: "10.794 Mbps"
+   OutTraffic: "333.332 Kbps"
+   name: 172.16.1.252~172.16.1.245~1668143209067#988
+   objName: IF-172.16.1.252-795
+   status: 5
+   ifName: N/A
+   intfDisplayName: GigabitEthernet0/10-Gi0/10
+
+边 5: 172.16.1.252 → 172.16.1.246
+────────────────────────────────────────────────────────────
+   InTraffic: "10.794 Mbps"
+   OutTraffic: "333.332 Kbps"
+   name: 172.16.1.252~172.16.1.246~1668143209096#846
+   objName: IF-172.16.1.252-795
+   status: 5
+   ifName: N/A
+   intfDisplayName: GigabitEthernet0/10-Gi0/10
+
+边 6: 172.16.1.252 → 172.16.1.248
+────────────────────────────────────────────────────────────
+   InTraffic: "10.794 Mbps"
+   OutTraffic: "333.332 Kbps"
+   name: 172.16.1.252~172.16.1.248~1668143209119#315
+   objName: IF-172.16.1.252-795
+   status: 5
+   ifName: N/A
+   intfDisplayName: GigabitEthernet0/10-Gi0/10
+
+边 7: 172.16.1.252 → 172.16.1.249
+────────────────────────────────────────────────────────────
+   InTraffic: "10.794 Mbps"
+   OutTraffic: "333.332 Kbps"
+   name: 172.16.1.252~172.16.1.249~1668143209155#134
+   objName: IF-172.16.1.252-795
+   status: 5
+   ifName: N/A
+   intfDisplayName: GigabitEthernet0/10-Gi0/10
+
+================================================================================
+📊 流量数据统计:
+================================================================================
+   有 InTraffic: 7/7
+   有 OutTraffic: 7/7
+   有 destProps: 0/7
+   有 srcProps: 0/7
+
+================================================================================
+📄 第一条边的完整 JSON 结构:
+================================================================================
+{
+  "L2scope": "undefined",
+  "showTraffic": "no",
+  "thickness": "3",
+  "parentDispName": "RankingSW02",
+  "menuName": "null",
+  "nx": "-1",
+  "className": "com.adventnet.nms.mapdb.MapLink",
+  "source": "172.16.1.2",
+  "ny": "-1",
+  "dest": "ad1.whrank.com",
+  "AdminStatImg": "/webclient/devices/images/status5.gif",
+  "type": "Interface",
+  "showLabel": "true",
+  "ifspeed": "10 Mbps",
+  "isDotted": "false",
+  "intfDisplayName": "FastEthernet0/10-\"xw-test\"",
+  "lineStyle": "1",
+  "ownerName": "NULL",
+  "managed": "true",
+  "mapName": "TEST2_bview.netmap",
+  "OperStatImg": "/webclient/devices/images/status2.gif",
+  "AdminStatus": "Up",
+  "InTraffic": "0 bps",
+  "showArrow": "false",
+  "OperStatus": "Down",
+  "objName": "IF-172.16.1.2-675",
+  "label": "",
+  "webNMS": "",
+  "labelColor": "#2c6cd2",
+  "OutUtil": "0.0",
+  "InUtil": "0.0",
+  "parentName": "172.16.1.2",
+  "groupName": "null",
+  "name": "172.16.1.2~ad1.whrank.com~1668143208998#639",
+  "x": "-1",
+  "viewType": "traffic",
+  "y": "-1",
+  "linkType": "1",
+  "OutTraffic": "0 bps",
+  "status": "3",
+  "desc": "FastEthernet0/10"
+}
+
+================================================================================
+🔍 检查所有边的流量值是否相同:
+================================================================================
+   InTraffic 唯一值数量: 2
+   InTraffic 值: 0 bps, 10.794 Mbps
+
+   OutTraffic 唯一值数量: 2
+   OutTraffic 值: 0 bps, 333.332 Kbps
+

@@ -94,8 +94,7 @@ export default function TopologyPage() {
                         />
                     ) : (
                         <TopologyViewer
-                            initialNodes={data.nodes}
-                            initialEdges={data.edges}
+                            viewName="出口业务"
                         />
                     )}
                 </div>

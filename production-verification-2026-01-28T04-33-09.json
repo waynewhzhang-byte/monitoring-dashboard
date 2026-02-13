@@ -1,0 +1,120 @@
+{
+  "timestamp": "2026-01-28T04:33:09.877Z",
+  "environment": {
+    "opmanagerUrl": "https://ithelp.whrank.com:44443",
+    "useMockData": "false",
+    "nodeEnv": "development"
+  },
+  "summary": {
+    "total": 12,
+    "passed": 12,
+    "failed": 0
+  },
+  "results": [
+    {
+      "category": "环境配置",
+      "test": "MOCK 数据已禁用",
+      "passed": true,
+      "message": "USE_MOCK_DATA = false"
+    },
+    {
+      "category": "环境配置",
+      "test": "OpManager 配置完整",
+      "passed": true,
+      "message": "URL: https://ithelp.whrank.com:44443, API Key: 已配置"
+    },
+    {
+      "category": "数据库",
+      "test": "数据库连接正常",
+      "passed": true,
+      "message": "成功连接到 PostgreSQL"
+    },
+    {
+      "category": "数据完整性",
+      "test": "设备数据",
+      "passed": true,
+      "message": "数据库中有 12 个设备",
+      "data": {
+        "count": 12
+      }
+    },
+    {
+      "category": "数据完整性",
+      "test": "告警数据",
+      "passed": true,
+      "message": "数据库中有 108 个活动告警",
+      "data": {
+        "count": 108
+      }
+    },
+    {
+      "category": "数据完整性",
+      "test": "Business View 配置",
+      "passed": true,
+      "message": "配置了 3 个 Business View",
+      "data": {
+        "count": 3
+      }
+    },
+    {
+      "category": "OpManager API",
+      "test": "设备列表 API",
+      "passed": true,
+      "message": "成功获取 5 个设备",
+      "data": {
+        "count": 5
+      }
+    },
+    {
+      "category": "OpManager API",
+      "test": "告警列表 API",
+      "passed": true,
+      "message": "成功获取 113 个告警",
+      "data": {
+        "count": 113
+      }
+    },
+    {
+      "category": "OpManager API",
+      "test": "Business View API",
+      "passed": true,
+      "message": "成功获取 2 个 Business View",
+      "data": {
+        "count": 2
+      }
+    },
+    {
+      "category": "数据一致性",
+      "test": "设备状态分布",
+      "passed": true,
+      "message": "设备状态统计",
+      "data": {
+        "OFFLINE": 12
+      }
+    },
+    {
+      "category": "数据一致性",
+      "test": "告警严重程度分布",
+      "passed": true,
+      "message": "告警严重程度统计",
+      "data": {
+        "MINOR": 31,
+        "MAJOR": 5,
+        "INFO": 62,
+        "CRITICAL": 9,
+        "WARNING": 1
+      }
+    },
+    {
+      "category": "采集器配置",
+      "test": "采集间隔配置",
+      "passed": true,
+      "message": "采集器配置正常",
+      "data": {
+        "metricsInterval": "60",
+        "alarmsInterval": "30",
+        "devicesInterval": "600"
+      }
+    }
+  ]
+}

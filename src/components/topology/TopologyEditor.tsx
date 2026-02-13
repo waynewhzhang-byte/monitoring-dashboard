@@ -8,7 +8,6 @@ import ReactFlow, {
     useEdgesState,
     addEdge,
     Connection,
-    ConnectionMode,
     MiniMap,
     Panel
 } from 'reactflow';
@@ -124,16 +123,13 @@ export const TopologyEditor: React.FC<TopologyEditorProps> = ({
                 onNodesChange={editable ? onNodesChange : undefined}
                 onEdgesChange={editable ? onEdgesChange : undefined}
                 onConnect={editable ? onConnect : undefined}
-                connectionMode={ConnectionMode.Loose}
                 fitView
                 attributionPosition="bottom-left"
             >
                 <Background color="#1e293b" gap={16} />
                 <Controls />
                 <MiniMap
-                    nodeColor={(node) => {
-                        return node.style?.background || '#06b6d4';
-                    }}
+                    nodeColor="#06b6d4"
                     maskColor="rgba(0, 0, 0, 0.5)"
                 />
 

@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 import { act, renderHook } from '@testing-library/react';
-import { useDashboardStore } from '../useDashboardStore';
-import { WidgetType } from '../../types/dashboard-config';
+import { useDashboardStore } from '@/stores/useDashboardStore';
+import { WidgetType } from '@/types/dashboard-config';
 
 describe('useDashboardStore', () => {
   beforeEach(() => {

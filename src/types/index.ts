@@ -19,6 +19,7 @@ export interface Device {
   status: DeviceStatus
   availability?: number | null
   isMonitored: boolean
+  group?: string | null
   createdAt: Date
   updatedAt: Date
   lastSyncAt?: Date | null
@@ -39,6 +40,7 @@ export type DeviceStatus =
   | 'OFFLINE'
   | 'WARNING'
   | 'ERROR'
+  | 'UNMANAGED'
 
 export type OSType =
   | 'WINDOWS'
