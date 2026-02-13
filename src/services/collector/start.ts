@@ -2,6 +2,7 @@ import { metricCollector } from './metric';
 import { alarmCollector } from './alarm';
 import { topologyCollector } from './topology';
 import { interfaceTrafficCollector } from './interface-traffic';
+import { dataCleanupService } from '../maintenance/data-cleanup';
 import { env } from '@/lib/env';
 
 async function startScheduler() {
@@ -47,6 +48,21 @@ async function startScheduler() {
     let metricsRunning = false;
     let alarmsRunning = false;
     let trafficRunning = false;
+
+    // 数据清理：每24小时执行一次，清理过期历史数据
+    const CLEANUP_INTERVAL_MS = 24 * 60 * 60 * 1000;
+    let cleanupRunning = false;
+    const cleanupTimer = setInterval(async () => {
+        if (cleanupRunning) return;
+        cleanupRunning = true;
+        try {
+            await dataCleanupService.cleanupAll();
+        } catch (error) {
+            console.error('❌ Data cleanup failed:', error);
+        } finally {
+            cleanupRunning = false;
+        }
+    }, CLEANUP_INTERVAL_MS);
 
     const topologyTimer = setInterval(async () => {
         if (topologyRunning) return;
@@ -101,6 +117,7 @@ async function startScheduler() {
     // Handle shutdown
     const shutdown = () => {
         console.log('🛑 Stopping scheduler...');
+        clearInterval(cleanupTimer);
         clearInterval(topologyTimer);
         clearInterval(metricsTimer);
         clearInterval(alarmsTimer);

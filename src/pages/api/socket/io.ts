@@ -3,6 +3,7 @@ import { NextApiRequest } from 'next';
 import { Server as ServerIO } from 'socket.io';
 import { createAdapter } from '@socket.io/redis-adapter';
 import { redis } from '@/lib/redis';
+import { env } from '@/lib/env';
 import { NextApiResponseServerIO } from '@/types/next';
 
 export const config = {
@@ -22,7 +23,7 @@ const ioHandler = (req: NextApiRequest, res: NextApiResponseServerIO) => {
         });
 
         // Redis Adapter
-        if (process.env.REDIS_URL) {
+        if (env.REDIS_URL) {
             const pubClient = redis.duplicate();
             const subClient = redis.duplicate();
             io.adapter(createAdapter(pubClient, subClient));

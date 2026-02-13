@@ -119,7 +119,7 @@ export const COLLECTION_INTERVALS = {
   METRICS: parseInt(process.env.COLLECT_METRICS_INTERVAL || '300'),
   /** 接口采集间隔，默认 300 秒（5 分钟） */
   INTERFACE: parseInt(process.env.COLLECT_INTERFACE_INTERVAL || '300'),
-  ALARMS: parseInt(process.env.COLLECT_ALARMS_INTERVAL || '30'),
+  ALARMS: parseInt(process.env.COLLECT_ALARMS_INTERVAL || '60'),
   TOPOLOGY: parseInt(process.env.SYNC_TOPOLOGY_INTERVAL || '300'),
   DEVICES: parseInt(process.env.SYNC_DEVICES_INTERVAL || '600'),
 } as const

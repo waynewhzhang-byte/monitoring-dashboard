@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
-import cron from 'node-cron';
+import { env } from '@/lib/env';
+import { logger } from '@/lib/logger';
 
 /**
  * 数据清理服务
@@ -8,119 +9,82 @@ import cron from 'node-cron';
 export class DataCleanupService {
     /**
      * 清理设备指标历史数据
-     * 保留策略: 30天
      */
-    async cleanupDeviceMetrics() {
-        const retentionDays = Number(process.env.DATA_RETENTION_DAYS) || 30;
+    async cleanupDeviceMetrics(): Promise<number> {
+        const retentionDays = env.DATA_RETENTION_DAYS;
         const cutoffDate = new Date();
         cutoffDate.setDate(cutoffDate.getDate() - retentionDays);
 
-        try {
-            const result = await prisma.deviceMetric.deleteMany({
-                where: {
-                    timestamp: {
-                        lt: cutoffDate
-                    }
-                }
-            });
+        const result = await prisma.deviceMetric.deleteMany({
+            where: { timestamp: { lt: cutoffDate } },
+        });
 
-            console.log(`✅ Cleaned up ${result.count} device metric records older than ${retentionDays} days`);
-            return result.count;
-        } catch (error) {
-            console.error('❌ Failed to cleanup device metrics:', error);
-            throw error;
-        }
+        logger.info(`Cleaned up ${result.count} device metric records older than ${retentionDays} days`);
+        return result.count;
     }
 
     /**
      * 清理流量指标历史数据
-     * 保留策略: 30天
      */
-    async cleanupTrafficMetrics() {
-        const retentionDays = Number(process.env.DATA_RETENTION_DAYS) || 30;
+    async cleanupTrafficMetrics(): Promise<number> {
+        const retentionDays = env.DATA_RETENTION_DAYS;
         const cutoffDate = new Date();
         cutoffDate.setDate(cutoffDate.getDate() - retentionDays);
 
-        try {
-            const result = await prisma.trafficMetric.deleteMany({
-                where: {
-                    timestamp: {
-                        lt: cutoffDate
-                    }
-                }
-            });
+        const result = await prisma.trafficMetric.deleteMany({
+            where: { timestamp: { lt: cutoffDate } },
+        });
 
-            console.log(`✅ Cleaned up ${result.count} traffic metric records older than ${retentionDays} days`);
-            return result.count;
-        } catch (error) {
-            console.error('❌ Failed to cleanup traffic metrics:', error);
-            throw error;
-        }
+        logger.info(`Cleaned up ${result.count} traffic metric records older than ${retentionDays} days`);
+        return result.count;
     }
 
     /**
-     * 清理已解决的告警
-     * 保留策略: 90天
+     * 清理已解决的告警（固定保留 90 天）
      */
-    async cleanupResolvedAlarms() {
+    async cleanupResolvedAlarms(): Promise<number> {
         const retentionDays = 90;
         const cutoffDate = new Date();
         cutoffDate.setDate(cutoffDate.getDate() - retentionDays);
 
-        try {
-            const result = await prisma.alarm.deleteMany({
-                where: {
-                    status: {
-                        in: ['RESOLVED', 'CLEARED']
-                    },
-                    resolvedAt: {
-                        lt: cutoffDate
-                    }
-                }
-            });
-
-            console.log(`✅ Cleaned up ${result.count} resolved alarms older than ${retentionDays} days`);
-            return result.count;
-        } catch (error) {
-            console.error('❌ Failed to cleanup alarms:', error);
-            throw error;
-        }
-    }
-
-    /**
-     * 执行所有清理任务
-     */
-    async cleanupAll() {
-        console.log('🧹 Starting data cleanup...');
-
-        const metrics = await this.cleanupDeviceMetrics();
-        const traffic = await this.cleanupTrafficMetrics();
-        const alarms = await this.cleanupResolvedAlarms();
-
-        console.log(`🎉 Cleanup completed! Total records cleaned: ${metrics + traffic + alarms}`);
-
-        return {
-            deviceMetrics: metrics,
-            trafficMetrics: traffic,
-            alarms: alarms,
-            total: metrics + traffic + alarms
-        };
-    }
-
-    /**
-     * 启动定时清理任务
-     * 每天凌晨2点执行
-     */
-    startScheduler() {
-        console.log('📅 Starting data cleanup scheduler (runs daily at 2:00 AM)...');
-
-        // 每天凌晨2点执行清理
-        cron.schedule('0 2 * * *', async () => {
-            console.log('⏰ Running scheduled cleanup task...');
-            await this.cleanupAll();
+        const result = await prisma.alarm.deleteMany({
+            where: {
+                status: { in: ['RESOLVED', 'CLEARED'] },
+                resolvedAt: { lt: cutoffDate },
+            },
         });
 
-        console.log('✅ Data cleanup scheduler started');
+        logger.info(`Cleaned up ${result.count} resolved alarms older than ${retentionDays} days`);
+        return result.count;
+    }
+
+    /**
+     * 执行所有清理任务（各任务错误相互隔离，不影响其他任务）
+     */
+    async cleanupAll(): Promise<{ deviceMetrics: number; trafficMetrics: number; alarms: number; total: number }> {
+        logger.info('Starting scheduled data cleanup...');
+
+        const results = await Promise.allSettled([
+            this.cleanupDeviceMetrics(),
+            this.cleanupTrafficMetrics(),
+            this.cleanupResolvedAlarms(),
+        ]);
+
+        const [metricsResult, trafficResult, alarmsResult] = results;
+        const deviceMetrics = metricsResult.status === 'fulfilled' ? metricsResult.value : 0;
+        const trafficMetrics = trafficResult.status === 'fulfilled' ? trafficResult.value : 0;
+        const alarms = alarmsResult.status === 'fulfilled' ? alarmsResult.value : 0;
+
+        results.forEach((result, index) => {
+            if (result.status === 'rejected') {
+                const taskNames = ['deviceMetrics', 'trafficMetrics', 'alarms'];
+                logger.error(`Cleanup task failed: ${taskNames[index]}`, { error: result.reason });
+            }
+        });
+
+        const total = deviceMetrics + trafficMetrics + alarms;
+        logger.info(`Data cleanup completed. Total records removed: ${total}`, { deviceMetrics, trafficMetrics, alarms });
+        return { deviceMetrics, trafficMetrics, alarms, total };
     }
 }
 
