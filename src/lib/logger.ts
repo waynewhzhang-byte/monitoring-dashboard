@@ -46,7 +46,7 @@ if (isServer) {
             // 综合日志文件
             new winston.transports.File({
               filename: path.join(logsDir, 'combined.log'),
-              maxsize: 10485760,
+              maxsize: 10485760, // 10MB
               maxFiles: 10,
               format: winston.format.combine(
                 winston.format.timestamp(),
@@ -64,7 +64,9 @@ if (isServer) {
               format: winston.format.combine(
                 winston.format.colorize(),
                 winston.format.printf(({ timestamp, level, message, ...meta }) => {
-                  const metaStr = Object.keys(meta).length ? JSON.stringify(meta, null, 2) : '';
+                  const metaStr = Object.keys(meta).length
+                    ? JSON.stringify(meta, null, 2)
+                    : '';
                   return `${timestamp} [${level}]: ${message} ${metaStr}`;
                 })
               ),
@@ -105,28 +107,28 @@ if (isServer) {
  * 服务端使用 Winston，客户端使用 console
  */
 export const logger = {
-  error: (message: string, meta?: any) => {
+  error: (message: string, meta?: Record<string, unknown>) => {
     if (isServer && serverLogger) {
       serverLogger.error(message, meta);
     } else {
       console.error(`[ERROR] ${message}`, meta || '');
     }
   },
-  warn: (message: string, meta?: any) => {
+  warn: (message: string, meta?: Record<string, unknown>) => {
     if (isServer && serverLogger) {
       serverLogger.warn(message, meta);
     } else {
       console.warn(`[WARN] ${message}`, meta || '');
     }
   },
-  info: (message: string, meta?: any) => {
+  info: (message: string, meta?: Record<string, unknown>) => {
     if (isServer && serverLogger) {
       serverLogger.info(message, meta);
     } else {
       console.info(`[INFO] ${message}`, meta || '');
     }
   },
-  debug: (message: string, meta?: any) => {
+  debug: (message: string, meta?: Record<string, unknown>) => {
     if (isServer && serverLogger) {
       serverLogger.debug(message, meta);
     } else {
@@ -134,5 +136,3 @@ export const logger = {
     }
   },
 } as winston.Logger;
-
-export default logger;

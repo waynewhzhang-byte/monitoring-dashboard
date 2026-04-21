@@ -92,5 +92,3 @@ export const DeviceNode: React.FC<NodeProps<DeviceNodeData>> = ({ data, selected
     </div>
   );
 };
-
-export default DeviceNode;

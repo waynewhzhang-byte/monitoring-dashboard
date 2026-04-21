@@ -19,7 +19,7 @@ import { RefreshCw, Layers, Save, Check } from 'lucide-react';
 import { getOptimalHandles, NODE_WIDTH, NODE_HEIGHT } from '@/lib/topology-utils';
 import { DeviceNode } from './nodes/DeviceNode';
 import type { DeviceNodeData } from './nodes/DeviceNode';
-import FlowEdge from './edges/FlowEdge';
+import { FlowEdge } from './edges/FlowEdge';
 
 interface ReactFlowTopologyViewerProps {
   viewName?: string;
@@ -500,5 +500,3 @@ export const ReactFlowTopologyViewer: React.FC<ReactFlowTopologyViewerProps> = (
     </div>
   );
 };
-
-export default ReactFlowTopologyViewer;

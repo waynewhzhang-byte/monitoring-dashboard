@@ -1,3 +1,5 @@
+'use client';
+
 /**
  * 业务拓扑连线 - 蓝色细线 + 绿色流动箭头
  */
@@ -10,7 +12,7 @@ import {
   Position,
 } from 'reactflow';
 
-const FlowEdge = ({
+const FlowEdgeComponent = ({
   id,
   sourceX,
   sourceY,
@@ -31,7 +33,9 @@ const FlowEdge = ({
     targetY,
   });
 
-  const strokeColor = (style as React.CSSProperties).stroke ?? (isExternal ? '#f97316' : '#0ea5e9');
+  const strokeColor =
+    (style as React.CSSProperties).stroke ??
+    (isExternal ? '#f97316' : '#0ea5e9');
   const strokeOpacity = isExternal ? 0.9 : 0.65;
 
   return (
@@ -65,24 +69,26 @@ const FlowEdge = ({
         className="react-flow__edge-path"
         markerEnd={`url(#${markerId})`}
       />
-      {data?.inTraffic && String(data.inTraffic).trim() && data.inTraffic !== '—' && (
-        <EdgeLabelRenderer>
-          <div
-            style={{
-              position: 'absolute',
-              transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
-              pointerEvents: 'all',
-            }}
-            className="bg-[#0a0e1a]/95 backdrop-blur-md px-2 py-0.5 rounded border border-cyan-500/25"
-          >
-            <span className="text-[9px] font-semibold text-cyan-300 font-mono">
-              {String(data.inTraffic)}
-            </span>
-          </div>
-        </EdgeLabelRenderer>
-      )}
+      {data?.inTraffic &&
+        String(data.inTraffic).trim() &&
+        data.inTraffic !== '—' && (
+          <EdgeLabelRenderer>
+            <div
+              style={{
+                position: 'absolute',
+                transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
+                pointerEvents: 'all',
+              }}
+              className="bg-[#0a0e1a]/95 backdrop-blur-md px-2 py-0.5 rounded border border-cyan-500/25"
+            >
+              <span className="text-[9px] font-semibold text-cyan-300 font-mono">
+                {String(data.inTraffic)}
+              </span>
+            </div>
+          </EdgeLabelRenderer>
+        )}
     </>
   );
 };
 
-export default memo(FlowEdge);
+export const FlowEdge = memo(FlowEdgeComponent);
