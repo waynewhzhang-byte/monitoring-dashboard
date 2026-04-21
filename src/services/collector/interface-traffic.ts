@@ -144,8 +144,8 @@ export class InterfaceTrafficCollector {
                             const inTrafficStr = opIntf.InTraffic || opIntf.inTraffic || opIntf.inBandwidth;
                             const outTrafficStr = opIntf.OutTraffic || opIntf.outTraffic || opIntf.outBandwidth;
 
-                            const inBps = parseTrafficToBps(inTrafficStr);
-                            const outBps = parseTrafficToBps(outTrafficStr);
+                            const inBps = parseTrafficToBps(inTrafficStr !== undefined ? String(inTrafficStr) : undefined);
+                            const outBps = parseTrafficToBps(outTrafficStr !== undefined ? String(outTrafficStr) : undefined);
 
                             // 提取利用率
                             const inUtil = parseFloat(opIntf.inUtilization || opIntf.InUtilization || '0');

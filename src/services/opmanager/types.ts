@@ -43,6 +43,14 @@ export interface OpManagerInterface {
   ifOperStatus?: string;
   inTraffic: string | number;
   outTraffic: string | number;
+  InTraffic?: string | number; // Support alternative casing
+  OutTraffic?: string | number; // Support alternative casing
+  inBandwidth?: string | number;
+  outBandwidth?: string | number;
+  inUtilization?: string;
+  InUtilization?: string;
+  outUtilization?: string;
+  OutUtilization?: string;
   inSpeed: string | number;
   outSpeed: string | number;
   inUtil?: string | number;
@@ -65,6 +73,7 @@ export interface OpManagerInterface {
   imagePath?: string;
   bgColor?: string;
   deviceName?: string;
+  [key: string]: unknown; // Catch-all for other API fields
 }
 
 export interface OpManagerResponse<T> {
