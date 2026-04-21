@@ -59,3 +59,6 @@ logs
 
 # OS
 Thumbs.db
+
+# Local deploy bundles (generated artifacts; do not commit)
+monitoring-dashboard-deploy-*.zip
