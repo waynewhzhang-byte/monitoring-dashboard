@@ -31,8 +31,34 @@ export const DashboardRenderer: React.FC<DashboardRendererProps> = ({
   const config = propConfig || activeDashboard;
   const editable = propEditable !== undefined ? propEditable : isEditing;
 
+  const widgets = config?.widgets ?? [];
+  const layout = config?.layout;
+  const theme = config?.theme;
+
+  // 转换配置到 React Grid Layout 格式（hooks 必须在任何 early return 之前）
+  const rglLayout = useMemo(() => {
+    return widgets.map(w => ({
+      i: w.id,
+      x: w.layout.col - 1,
+      y: w.layout.row - 1,
+      w: w.layout.colSpan,
+      h: w.layout.rowSpan,
+      minW: w.layout.minWidth,
+      minH: w.layout.minHeight,
+    }));
+  }, [widgets]);
+
   // 🔥 启用实时数据更新
   const { isConnected, lastUpdate } = useRealtimeUpdates();
+
+  // 应用主题样式
+  const themeStyle = useMemo(() => {
+    if (!theme) return {};
+    return {
+      backgroundColor: theme.backgroundColor || 'transparent',
+      color: theme.textColor || 'inherit'
+    };
+  }, [theme]);
 
   // 显示实时更新状态指示器
   useEffect(() => {
@@ -51,20 +77,11 @@ export const DashboardRenderer: React.FC<DashboardRendererProps> = ({
     );
   }
 
-  const { layout, theme, widgets } = config;
-
-  // 转换配置到 React Grid Layout 格式
-  const rglLayout = useMemo(() => {
-    return widgets.map(w => ({
-      i: w.id,
-      x: w.layout.col - 1,
-      y: w.layout.row - 1,
-      w: w.layout.colSpan,
-      h: w.layout.rowSpan,
-      minW: w.layout.minWidth,
-      minH: w.layout.minHeight,
-    }));
-  }, [widgets]);
+  const resolvedLayout = layout ?? {
+    columns: 24,
+    rowHeight: 80,
+    gap: 16,
+  };
 
   // 处理布局改变
   const handleLayoutChange = (currentLayout: any, allLayouts?: any) => {
@@ -95,24 +112,15 @@ export const DashboardRenderer: React.FC<DashboardRendererProps> = ({
     });
   };
 
-  // 应用主题样式
-  const themeStyle = useMemo(() => {
-    if (!theme) return {};
-    return {
-      backgroundColor: theme.backgroundColor || 'transparent',
-      color: theme.textColor || 'inherit'
-    };
-  }, [theme]);
-
   // 渲染编辑模式下的布局
   if (editable) {
     const responsiveProps = {
       className: "layout",
       layouts: { lg: rglLayout },
       breakpoints: { lg: 1200, md: 996, sm: 768, xs: 480, xss: 0 },
-      cols: { lg: layout.columns || 24, md: 20, sm: 12, xs: 8, xss: 4 },
-      rowHeight: layout.rowHeight || 80,
-      margin: [layout.gap || 16, layout.gap || 16] as [number, number],
+      cols: { lg: resolvedLayout.columns || 24, md: 20, sm: 12, xs: 8, xss: 4 },
+      rowHeight: resolvedLayout.rowHeight || 80,
+      margin: [resolvedLayout.gap || 16, resolvedLayout.gap || 16] as [number, number],
       onLayoutChange: handleLayoutChange,
       draggableHandle: ".widget-drag-handle",
     };
@@ -152,10 +160,10 @@ export const DashboardRenderer: React.FC<DashboardRendererProps> = ({
   // 渲染预览/展示模式下的静态布局 (保持原有 CSS Grid 提高性能)
   const gridStyle = {
     display: 'grid',
-    gridTemplateColumns: `repeat(${layout.columns || 24}, 1fr)`,
-    gridAutoRows: `${layout.rowHeight || 80}px`,
-    gap: `${layout.gap || 16}px`,
-    padding: `${layout.gap || 16}px`,
+    gridTemplateColumns: `repeat(${resolvedLayout.columns || 24}, 1fr)`,
+    gridAutoRows: `${resolvedLayout.rowHeight || 80}px`,
+    gap: `${resolvedLayout.gap || 16}px`,
+    padding: `${resolvedLayout.gap || 16}px`,
     width: '100%',
     height: '100%',
   };

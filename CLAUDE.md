@@ -10,7 +10,8 @@ Enterprise network monitoring dashboard integrating ManageEngine OpManager API f
 
 ```bash
 # Development
-npm run dev              # Dev server at http://localhost:3000 (binds 0.0.0.0)
+npm run dev              # Next.js dev + 数据采集器（拓扑等）同一进程树启动
+npm run dev:next         # 仅 Next.js（不调采集器）
 npm run build            # Production build (standalone output + static copy)
 npm run start            # Start production (Next.js server + collector)
 npm run collector        # Start data collector only (connects to real OpManager)
@@ -66,6 +67,8 @@ The collector (`src/services/collector/start.ts`) runs as a **separate long-live
 - **Manual only**: device sync and interface sync — triggered via `/api/devices/sync`, `/api/interfaces/sync`, or admin panel buttons
 
 Intervals are configured via environment variables (see `src/lib/env.ts`). Defaults: metrics 1200s, alarms 120s, topology 1200s.
+
+Each topology sync logs: `[TopologyCollector] OpManager getBVDetails("<name>") → deviceProperties=N, linkProperties=M` (plus a sample node/link when counts are non-zero). **`BusinessViewConfig.name` must match OpManager `bvName` exactly** (e.g. `TEST1`, `TEST2`). To upsert those two rows: `npm run bv:ensure-TEST1-TEST2`. To confirm OPM returns data **without writing the DB**: `npm run verify:opm-topology`. After `POST /api/topology/sync`, the JSON includes **`opm`** (`responded`, `devicePropertiesCount`, `linkPropertiesCount`, optional `error`) alongside **`nodes`/`edges`** written to Prisma.
 
 ### Two TypeScript Configs
 

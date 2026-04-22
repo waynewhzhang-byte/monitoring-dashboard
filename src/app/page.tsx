@@ -1,8 +1,29 @@
-import { redirect } from 'next/navigation';
+'use client';
+
+import dynamic from 'next/dynamic';
+
+const ReactFlowTopologyViewer = dynamic(
+  () =>
+    import('@/components/topology/ReactFlowTopologyViewer').then((m) => ({
+      default: m.ReactFlowTopologyViewer,
+    })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex h-full min-h-[50dvh] w-full items-center justify-center text-slate-500 text-sm">
+        加载拓扑…
+      </div>
+    ),
+  }
+);
 
 /**
- * 首页直接跳转到大屏，避免只看到“初始化完成”的占位页
+ * 业务视图仅客户端渲染，避免 React Flow 与 SSR 的 hydration 不一致。
  */
 export default function Home() {
-  redirect('/dashboard');
+  return (
+    <div className="h-dvh w-screen min-h-0 overflow-hidden bg-[#0a0e1a]">
+      <ReactFlowTopologyViewer isVisible />
+    </div>
+  );
 }

@@ -14,6 +14,7 @@ import {
 } from './types';
 import { getMockDataStore } from '@/services/mock/opmanager-mock-data';
 import { env } from '@/lib/env';
+import { normalizeGetBVDetailsPayload } from '@/services/opmanager/normalize-get-bv-details';
 
 /** 上次 getInterfaces 调用完成时间（用于限流，避免 OpManager URL_ROLLING_THROTTLES_LIMIT_EXCEEDED） */
 let lastGetInterfacesTime = 0;
@@ -73,6 +74,9 @@ export class OpManagerClient {
           ? env.OPMANAGER_TIMEOUT
           : 60000, // 默认60秒，适应生产环境
       httpsAgent: httpsAgent, // Use custom HTTPS agent for self-signed certificates
+      // Axios Node 适配器会读 HTTP_PROXY/HTTPS_PROXY。本机常配 Clash 7890，代理未开则 ECONNREFUSED。
+      // OpManager 多为直连或专线，此处禁用全局代理，避免误连 127.0.0.1:7890。
+      proxy: false,
     });
 
     // Add API Key to Headers
@@ -747,17 +751,25 @@ export class OpManagerClient {
   async getBVDetails(bvName: string): Promise<Record<string, unknown> | null> {
     if (this.useMock) {
       const store = getMockDataStore();
-      return store.getBusinessViewTopology(bvName) as unknown as Record<string, unknown>;
+      const raw = store.getBusinessViewTopology(bvName) as unknown as
+        | Record<string, unknown>
+        | null
+        | undefined;
+      return normalizeGetBVDetailsPayload(raw ?? null);
     }
 
     try {
-      const response = await this.client.get<Record<string, unknown>>(
+      const response = await this.client.get<unknown>(
         '/api/json/businessview/getBVDetails',
         {
           params: { bvName }, // axios 会按 UTF-8 编码 bvName（如中文）
         }
       );
-      return response.data;
+      const raw = response.data;
+      if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
+        return null;
+      }
+      return normalizeGetBVDetailsPayload(raw as Record<string, unknown>);
     } catch (error) {
       console.error(`Failed to fetch Business View ${bvName}:`, error);
       return null;
@@ -767,7 +779,7 @@ export class OpManagerClient {
   /**
    * 获取业务视图设备性能
    * OpManager API: GET /api/json/businessview/getBusinessDetailsView?bvName=xxx&startPoint=0&viewLength=50
-   * bvName 需与 OpManager 中业务视图名称完全一致（含大小写，如 test2）。
+   * bvName 需与 OpManager 中业务视图名称完全一致（含大小写，如 TEST1、TEST2）。
    */
   async getBusinessDetailsView(
     bvName: string,

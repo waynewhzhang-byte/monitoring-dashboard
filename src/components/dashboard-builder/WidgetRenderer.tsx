@@ -21,6 +21,7 @@ interface WidgetRendererProps {
  * 根据Widget配置动态选择并渲染对应组件
  */
 export const WidgetRenderer: React.FC<WidgetRendererProps> = ({ widget, realtimeKey }) => {
+  const currentBusinessView = useDashboardStore((s) => s.currentBusinessView);
   // 获取Widget数据（传递 realtimeKey 触发重新获取）
   const { data, loading, error } = useWidgetData(widget.dataSource, realtimeKey);
 
@@ -100,10 +101,9 @@ export const WidgetRenderer: React.FC<WidgetRendererProps> = ({ widget, realtime
         </div>
       );
 
-    case WidgetType.TOPOLOGY_MAP:
-      // Use global view selection if available, otherwise fall back to config
-      const globalView = useDashboardStore(s => s.currentBusinessView);
-      const activeView = globalView || widget.config?.bvName || '出口业务';
+    case WidgetType.TOPOLOGY_MAP: {
+      const activeView =
+        currentBusinessView || widget.config?.bvName || '出口业务';
 
       return (
         <div className="h-full bg-slate-900/60 rounded-lg border border-slate-700/80 overflow-hidden shadow-xl shadow-slate-950/50 backdrop-blur-sm">
@@ -122,6 +122,7 @@ export const WidgetRenderer: React.FC<WidgetRendererProps> = ({ widget, realtime
           </div>
         </div>
       );
+    }
 
     case WidgetType.TITLE:
       return (

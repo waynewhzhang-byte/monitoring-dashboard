@@ -2,6 +2,19 @@ import { prisma } from '@/lib/prisma';
 import { opClient } from '@/services/opmanager/client';
 import { broadcaster } from '@/services/broadcast';
 
+/** 单次拓扑同步结果：含 OpManager getBVDetails 原始数组长度，便于确认是否拉到数据 */
+export interface TopologySyncResult {
+  nodes: number;
+  edges: number;
+  opm: {
+    responded: boolean;
+    devicePropertiesCount: number;
+    linkPropertiesCount: number;
+    /** null_response | sync_exception 等 */
+    error?: string;
+  };
+}
+
 /**
  * 将 OpManager 流量字符串解析为 bps (BigInt)，用于写入 TrafficMetric。
  * 支持格式: "10.806 Mbps", "3.768 K", "69.148 M (0.0%)", "0 bps", "NA"
@@ -32,19 +45,66 @@ function parseTrafficToBps(trafficStr: string | undefined): bigint {
 }
 
 export class TopologyCollector {
-    async syncBusinessView(bvName: string) {
+    async syncBusinessView(bvName: string): Promise<TopologySyncResult> {
         console.log(`🔄 Syncing Business View: ${bvName}...`);
         let nodesCount = 0;
         let edgesCount = 0;
+        let opmSnapshot: TopologySyncResult['opm'] = {
+            responded: false,
+            devicePropertiesCount: 0,
+            linkPropertiesCount: 0,
+        };
         try {
             // Fetch Topology from OpManager getBVDetails
             const topologyData = await opClient.getBVDetails(bvName);
-            if (!topologyData) return { nodes: 0, edges: 0 };
+            if (!topologyData) {
+                console.warn(
+                    `⚠️ getBVDetails returned null for "${bvName}" (网络错误或响应非 JSON)。`
+                );
+                return {
+                    nodes: 0,
+                    edges: 0,
+                    opm: {
+                        responded: false,
+                        devicePropertiesCount: 0,
+                        linkPropertiesCount: 0,
+                        error: 'null_response',
+                    },
+                };
+            }
 
             // ⚠️ 不再调用 getBusinessDetailsView
             // 设备状态和性能数据直接从 Device 表读取（由独立采集器维护）
+            // getBVDetails 已在 OpManagerClient 内归一化嵌套/大小写字段
 
-            const { deviceProperties, linkProperties } = topologyData;
+            const deviceProperties = Array.isArray(topologyData.deviceProperties)
+                ? topologyData.deviceProperties
+                : [];
+            const linkProperties = Array.isArray(topologyData.linkProperties)
+                ? topologyData.linkProperties
+                : [];
+
+            const apiDeviceCount = deviceProperties.length;
+            const apiLinkCount = linkProperties.length;
+            opmSnapshot = {
+                responded: true,
+                devicePropertiesCount: apiDeviceCount,
+                linkPropertiesCount: apiLinkCount,
+            };
+            console.log(
+                `[TopologyCollector] OpManager getBVDetails("${bvName}") → deviceProperties=${apiDeviceCount}, linkProperties=${apiLinkCount}`
+            );
+            if (apiDeviceCount > 0) {
+                const first = deviceProperties[0] as Record<string, unknown>;
+                const sid = first.objName ?? first.name ?? '(no id)';
+                console.log(`[TopologyCollector]   首节点 objName|name: ${String(sid)}`);
+            }
+            if (apiLinkCount > 0) {
+                const lk = linkProperties[0] as Record<string, unknown>;
+                console.log(
+                    `[TopologyCollector]   首链路 source→dest: ${String(lk.source)} → ${String(lk.dest)}`
+                );
+            }
 
             // ⚠️ 关键：先保存所有现有节点的位置信息到内存，以便在删除后重新创建时保留位置
             console.log(`💾 Saving existing node positions for Business View: ${bvName}...`);
@@ -63,8 +123,7 @@ export class TopologyCollector {
             console.log(`✅ Old data cleaned, preserved ${positionMap.size} node positions`);
 
             // 1. Sync Nodes（不再获取 performance 数据，只存储拓扑结构）
-            if (deviceProperties && Array.isArray(deviceProperties)) {
-                for (const dev of deviceProperties) {
+            for (const dev of deviceProperties) {
                     // Find existing device: 先按 opmanagerId，再按 IP
                     const opId = dev.objName || dev.name;
                     let device = await prisma.device.findUnique({
@@ -129,13 +188,17 @@ export class TopologyCollector {
 
                     // ⚠️ 不再从 getBusinessDetailsView 写入 DeviceMetric
                     // DeviceMetric 由独立的设备采集器维护
-                }
             }
 
             // 2. Sync Edges（并在有接口时将 InTraffic/OutTraffic 写入 TrafficMetric，每接口每轮同步只写一条）
             const writtenInterfaceIds = new Set<string>();
-            if (linkProperties && Array.isArray(linkProperties)) {
-                for (const link of linkProperties) {
+            if (apiDeviceCount === 0 && apiLinkCount === 0) {
+                console.warn(
+                    `[TopologyCollector] ⚠️ OpManager 对 bvName="${bvName}" 返回空拓扑。请核对：① OpManager 中业务视图标识与 DB BusinessViewConfig.name 完全一致（如 TEST1、TEST2）；② 该视图在 OPM 中已放置设备与连线。`
+                );
+            }
+
+            for (const link of linkProperties) {
                     const sourceId = `${bvName}-${link.source}`;
                     const targetId = `${bvName}-${link.dest}`;
                     const edgeId = `${bvName}-${link.source}-${link.dest}-${link.name}`;
@@ -214,7 +277,6 @@ export class TopologyCollector {
                             );
                         }
                     }
-                }
             }
 
             console.log(
@@ -238,10 +300,17 @@ export class TopologyCollector {
                 edges: edgesCount,
                 timestamp: Date.now()
             });
-            return { nodes: nodesCount, edges: edgesCount };
+            return { nodes: nodesCount, edges: edgesCount, opm: opmSnapshot };
         } catch (error) {
             console.error(`❌ Failed to sync Business View ${bvName}:`, error);
-            return { nodes: nodesCount, edges: edgesCount };
+            return {
+                nodes: nodesCount,
+                edges: edgesCount,
+                opm: {
+                    ...opmSnapshot,
+                    error: opmSnapshot.error ?? 'sync_exception',
+                },
+            };
         }
     }
 }

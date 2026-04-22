@@ -4,7 +4,8 @@
   "description": "智能监控大屏系统 - 基于Next.js的企业级网络监控平台",
   "private": true,
   "scripts": {
-    "dev": "next dev -H 0.0.0.0",
+    "dev": "node scripts/dev-all.js",
+    "dev:next": "next dev -H 0.0.0.0",
     "dev:all": "node scripts/dev-all.js",
     "build": "next build && node scripts/copy-standalone-static.js",
     "start": "node scripts/start-all.js",
@@ -19,6 +20,8 @@
     "db:reset": "prisma migrate reset",
     "add-unmanaged-enum": "ts-node -r tsconfig-paths/register --project tsconfig.node.json scripts/add-unmanaged-enum.ts",
     "collector": "node scripts/run-collector.js",
+    "bv:ensure-TEST1-TEST2": "tsx scripts/ensure-bv-TEST1-TEST2.ts",
+    "verify:opm-topology": "tsx scripts/verify-opm-topology-sync.ts",
     "mock-collector": "ts-node -r tsconfig-paths/register --project tsconfig.node.json scripts/start-mock-collector.ts",
     "diagnose:dashboard": "tsx scripts/diagnose-dashboard-api.ts",
     "diagnose:database": "tsx scripts/diagnose-database-data.ts",

@@ -16,6 +16,11 @@ async function startScheduler() {
             select: { name: true },
         });
 
+        const names = activeViews.map((v) => v.name).join(', ') || '(无)';
+        console.log(
+            `[Collector] 本轮将同步拓扑的业务视图 name 列表（须与 OpManager bvName 完全一致）: ${names}`
+        );
+
         for (const view of activeViews) {
             await topologyCollector.syncBusinessView(view.name);
         }

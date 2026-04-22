@@ -154,7 +154,12 @@ export class InterfaceCollector {
                             // Generate unique opmanagerId: deviceId + interface name/ifIndex
                             // This ensures uniqueness across all devices
                             // Handle both listInterfaces format (interfaceName) and getInterfaces format (name)
-                            const interfaceName = iface.name || iface.interfaceName || iface.interfaceDisplayName || '';
+                            const interfaceName = String(
+                                iface.name ||
+                                    iface.interfaceName ||
+                                    iface.interfaceDisplayName ||
+                                    ''
+                            );
                             const interfaceId = iface.ifIndex || iface.id || iface.interfaceId || interfaceName;
                             const uniqueOpManagerId = `${device.opmanagerId || device.name}_${interfaceId}`;
                             
@@ -186,20 +191,48 @@ export class InterfaceCollector {
                             if (iface.inSpeed) {
                                 const speedStr = String(iface.inSpeed).replace(/\D/g, '');
                                 speed = speedStr ? BigInt(speedStr) : null;
-                            } else if (iface.ifSpeed) {
-                                speed = BigInt(iface.ifSpeed);
+                            } else if (iface.ifSpeed != null && iface.ifSpeed !== '') {
+                                const rawSpeed = iface.ifSpeed;
+                                if (typeof rawSpeed === 'bigint') {
+                                    speed = rawSpeed;
+                                } else if (typeof rawSpeed === 'number' && !Number.isNaN(rawSpeed)) {
+                                    speed = BigInt(Math.trunc(rawSpeed));
+                                } else if (typeof rawSpeed === 'string') {
+                                    const digits = rawSpeed.replace(/\D/g, '');
+                                    speed = digits ? BigInt(digits) : null;
+                                }
                             }
 
-                            // Extract interface type
-                            const interfaceType = iface.ifType || iface.type || 'ETHERNET';
+                            // Extract interface type（OPM 字段可能非 string，统一成 string 满足 Prisma）
+                            const interfaceType = String(iface.ifType ?? iface.type ?? 'ETHERNET');
 
                             // IMPORTANT: Tags are now MANUAL ONLY - no automatic tag generation
                             // All tags must be set manually via the admin interface
                             // This ensures users have full control over interface categorization
                             // Upsert Interface
-                            const interfaceData = {
+                            const rawDisplay =
+                                iface.displayName ?? iface.interfaceDisplayName ?? interfaceName;
+                            const displayNameStr =
+                                typeof rawDisplay === 'string'
+                                    ? rawDisplay
+                                    : rawDisplay == null
+                                      ? interfaceName
+                                      : String(rawDisplay);
+
+                            const interfaceData: {
+                                name: string;
+                                displayName: string;
+                                status: InterfaceStatus;
+                                ipAddress: string | null;
+                                speed: bigint | null;
+                                macAddress: string | null;
+                                mtu: number | null;
+                                ifIndex: number | null;
+                                lastSyncAt: Date;
+                                type: string;
+                            } = {
                                 name: fullInterfaceName, // Use "设备名称+接口名称" format for unique identification
-                                displayName: iface.displayName || iface.interfaceDisplayName || interfaceName,
+                                displayName: displayNameStr,
                                 status: status,
                                 ipAddress: iface.ipAddress || null,
                                 speed: speed,

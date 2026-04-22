@@ -6,7 +6,8 @@ This file provides guidelines for AI agents working in this repository.
 
 ```bash
 # Development
-npm run dev                    # Start development server (http://localhost:3000)
+npm run dev                    # Next.js dev + data collector (topology sync, etc.)
+npm run dev:next               # Next.js only (no collector)
 npm run collector              # Start data collector service (separate terminal)
 
 # Build & Type Check

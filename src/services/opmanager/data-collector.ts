@@ -55,6 +55,7 @@ export class OpManagerDataCollector {
         apiKey: apiKey,
       },
       httpsAgent: httpsAgent, // Use custom HTTPS agent for self-signed certificates
+      proxy: false, // 与 OpManagerClient 一致：不走 HTTP(S)_PROXY，避免本机 7890 代理未启动时报错
     });
 
     // 添加响应拦截器用于错误处理

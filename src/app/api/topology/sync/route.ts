@@ -12,7 +12,13 @@ export async function POST(req: NextRequest) {
     const contentType = req.headers.get('content-type') || '';
     if (contentType.includes('application/json')) {
       const body = await req.json().catch(() => ({}));
-      bvName = typeof body.bvName === 'string' ? body.bvName.trim() : null;
+      const raw =
+        typeof body.bvName === 'string'
+          ? body.bvName
+          : typeof (body as { viewName?: unknown }).viewName === 'string'
+            ? (body as { viewName: string }).viewName
+            : null;
+      bvName = raw?.trim() || null;
     }
     if (!bvName) {
       bvName = req.nextUrl.searchParams.get('bvName')?.trim() || null;
@@ -28,8 +34,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       success: true,
       bvName,
+      /** 写入 Prisma 的节点/边条数 */
       nodes: result.nodes,
       edges: result.edges,
+      /**
+       * OpManager getBVDetails 侧：是否拿到可解析 JSON、归一化后的 device/link 数组长度。
+       * responded=false 或两计数为 0 时，说明与 OPM 交互失败或 bvName/视图无拓扑。
+       */
+      opm: result.opm,
     });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Sync failed';

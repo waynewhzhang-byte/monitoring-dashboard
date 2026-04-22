@@ -23,9 +23,10 @@
 ### Development Commands
 | Command | Description |
 |---------|-------------|
-| `npm run dev` | Starts the Next.js development server. |
-| `npm run dev:all` | Starts Next.js and the collector service concurrently. |
-| `npm run collector` | Starts the OpManager data collection service. |
+| `npm run dev` | Starts Next.js dev server and the OpManager collector together. |
+| `npm run dev:next` | Next.js development server only (no collector). |
+| `npm run dev:all` | Same as `npm run dev` (alias). |
+| `npm run collector` | Collector only (e.g. when Next is already running via `dev:next`). |
 | `npm run db:push` | Pushes the Prisma schema to the database. |
 | `npm run db:generate` | Generates the Prisma Client. |
 | `npm run db:seed` | Seeds the database with initial data. |

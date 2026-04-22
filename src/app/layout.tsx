@@ -15,8 +15,8 @@ const dmSans = DM_Sans({
 })
 
 export const metadata: Metadata = {
-  title: '智能监控大屏系统',
-  description: '企业级网络监控可视化平台',
+  title: '业务视图拓扑',
+  description: 'OpManager 业务视图网络拓扑',
 }
 
 export default function RootLayout({

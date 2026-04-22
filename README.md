@@ -111,12 +111,10 @@ docker-compose up -d postgres redis
 npm run db:push
 npm run db:seed
 
-# 6. 启动开发服务器
+# 6. 启动开发环境（Next.js + 数据采集器，含拓扑同步）
 npm run dev
 # 访问 http://localhost:3000
-
-# 7. 启动数据采集（新终端）
-npm run collector
+# 若只需前端不调 OpManager：npm run dev:next
 ```
 
 ### Docker 部署

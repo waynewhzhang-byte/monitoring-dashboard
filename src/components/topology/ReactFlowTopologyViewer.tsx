@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ReactFlow, {
   Node,
   Edge,
@@ -62,34 +62,52 @@ export const ReactFlowTopologyViewer: React.FC<ReactFlowTopologyViewerProps> = (
   });
   const [businessViews, setBusinessViews] = useState<Array<{ id: string; name: string; displayName?: string }>>([]);
   const [showViewSelector, setShowViewSelector] = useState(false);
+  /** 每个业务视图在会话内最多自动同步一次（DB 尚无拓扑时从 OpManager 拉取） */
+  const autoSyncedViewsRef = useRef(new Set<string>());
 
-  // 获取业务视图列表
+  // 获取业务视图列表；并纠正 localStorage / 父组件里已不存在于 DB 的视图名
   useEffect(() => {
     const fetchBusinessViews = async () => {
       try {
         const response = await fetch('/api/admin/business-views');
-        if (response.ok) {
-          const views = await response.json();
-          setBusinessViews(views);
+        if (!response.ok) return;
 
-          // 如果没有选中的视图，默认选中第一个业务视图
-          if (!currentViewName && views.length > 0) {
-            const firstView = views[0].name;
-            setCurrentViewName(firstView);
-            if (typeof window !== 'undefined') {
-              localStorage.setItem('dashboard-topology-view', firstView);
-            }
-            if (onViewChange) {
-              onViewChange(firstView);
-            }
-          }
+        const views = (await response.json()) as Array<{
+          id: string;
+          name: string;
+          displayName?: string;
+        }>;
+        setBusinessViews(views);
+
+        if (views.length === 0) return;
+
+        const names = new Set(views.map((v) => v.name));
+        const saved =
+          typeof window !== 'undefined'
+            ? (localStorage.getItem('dashboard-topology-view') || '').trim()
+            : '';
+        const fromParent = (propViewName || '').trim();
+        let next = saved || fromParent;
+
+        if (!next || !names.has(next)) {
+          next = views[0].name;
+        }
+
+        // 必须始终 setState：首屏 SSR  hydration 后 currentViewName 可能仍是 ''（useState 初始化在服务端走不到 localStorage），
+        // 若此处仅在「无效名」分支才 setCurrentViewName，会导致 next 已从 localStorage 解析正确但状态永远为空 → 永远不请求拓扑。
+        setCurrentViewName(next);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('dashboard-topology-view', next);
+        }
+        if (next !== fromParent) {
+          onViewChange?.(next);
         }
       } catch (error) {
         console.error('Failed to fetch business views:', error);
       }
     };
     fetchBusinessViews();
-  }, []);
+  }, [onViewChange, propViewName]);
 
   // Dagre 层次化布局算法
   const getLayoutedElements = useCallback((nodes: Node[], edges: Edge[]) => {
@@ -141,7 +159,48 @@ export const ReactFlowTopologyViewer: React.FC<ReactFlowTopologyViewerProps> = (
     setLoading(true);
     try {
       const response = await fetch(`/api/topology?bvName=${encodeURIComponent(bvName)}`);
-      const data = await response.json();
+      if (!response.ok) {
+        const errText = await response.text().catch(() => '');
+        console.error('Topology API HTTP', response.status, errText.slice(0, 200));
+        setNodes([]);
+        setEdges([]);
+        return;
+      }
+
+      let data = await response.json();
+      if (data?.error) {
+        console.error('Topology API error payload:', data.error);
+        setNodes([]);
+        setEdges([]);
+        return;
+      }
+
+      const emptyTopology =
+        Array.isArray(data.nodes) &&
+        Array.isArray(data.edges) &&
+        data.nodes.length === 0 &&
+        data.edges.length === 0;
+      if (emptyTopology && !autoSyncedViewsRef.current.has(bvName)) {
+        autoSyncedViewsRef.current.add(bvName);
+        try {
+          const syncRes = await fetch('/api/topology/sync', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ bvName }),
+          });
+          if (syncRes.ok) {
+            const r2 = await fetch(`/api/topology?bvName=${encodeURIComponent(bvName)}`);
+            if (r2.ok) {
+              data = await r2.json();
+            }
+          } else {
+            const msg = await syncRes.text().catch(() => '');
+            console.warn('Auto topology sync failed:', syncRes.status, msg.slice(0, 200));
+          }
+        } catch (e) {
+          console.warn('Auto topology sync request failed:', e);
+        }
+      }
 
       if (data.nodes && data.edges) {
         const positionMap = new Map<string, { x: number; y: number }>();
@@ -232,17 +291,6 @@ export const ReactFlowTopologyViewer: React.FC<ReactFlowTopologyViewerProps> = (
     }
   }, [isVisible, fetchTopology]);
 
-  // 加载 localStorage 中的视图名称
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const savedViewName = localStorage.getItem('dashboard-topology-view') || '';
-      setCurrentViewName(savedViewName);
-      if (onViewChange) {
-        onViewChange(savedViewName);
-      }
-    }
-  }, [onViewChange]);
-
   // 自定义节点变化处理 - 追踪位置变化
   const handleNodesChange = useCallback(
     (changes: NodeChange[]) => {
@@ -303,7 +351,7 @@ export const ReactFlowTopologyViewer: React.FC<ReactFlowTopologyViewerProps> = (
       const response = await fetch('/api/topology/sync', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ viewName: currentViewName }),
+        body: JSON.stringify({ bvName: currentViewName }),
       });
       if (response.ok) {
         await fetchTopology();
@@ -337,7 +385,7 @@ export const ReactFlowTopologyViewer: React.FC<ReactFlowTopologyViewerProps> = (
             <Layers className="w-16 h-16 text-cyan-500/50" />
             <div className="text-cyan-400 font-bold text-lg">未配置业务视图</div>
             <div className="text-slate-400 text-sm max-w-md">
-              请前往 Admin 面板配置业务视图
+              请在数据库中配置 BusinessViewConfig，或通过 API 维护业务视图名称后同步拓扑
             </div>
           </div>
         </div>
@@ -352,6 +400,27 @@ export const ReactFlowTopologyViewer: React.FC<ReactFlowTopologyViewerProps> = (
             <div className="text-slate-400 text-sm max-w-md">
               点击顶部标题选择业务视图
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* 已选视图但无拓扑：深色画布 + 0 节点时易被误认为整页未加载（gstack-browse 已证实 API 返回空数组） */}
+      {!loading && currentViewName && nodes.length === 0 && edges.length === 0 && (
+        <div className="pointer-events-none absolute inset-0 z-40 flex items-center justify-center px-6">
+          <div className="pointer-events-auto max-w-lg rounded-xl border border-cyan-500/25 bg-slate-950/92 px-8 py-6 text-center shadow-2xl backdrop-blur-sm">
+            <Layers className="mx-auto mb-3 h-10 w-10 text-cyan-500/60" />
+            <p className="text-base font-semibold text-slate-100">
+              「
+              {businessViews.find((v) => v.name === currentViewName)?.displayName ||
+                currentViewName}
+              」暂无拓扑节点
+            </p>
+            <p className="mt-3 text-sm leading-relaxed text-slate-400">
+              当前接口返回空图。请核对 OpManager 中业务视图名称与本系统{' '}
+              <span className="font-mono text-cyan-400/90">BusinessViewConfig.name</span>{' '}
+              是否完全一致，且该视图在 OPM 中已绘制设备与连线；然后使用右上角「从 OpManager
+              同步拓扑」拉取。
+            </p>
           </div>
         </div>
       )}
